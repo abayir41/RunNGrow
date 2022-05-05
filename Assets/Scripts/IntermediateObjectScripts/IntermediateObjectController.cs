@@ -78,10 +78,15 @@ public class IntermediateObjectController : MonoBehaviour
         //notify that object leave
         IntermediateObjectActions.IntermediateStartToMove?.Invoke(obj, leaveSide);
         
+        
+        //fix the target y, because if diff is 0, twenn cant make Ease.Outback, so ve have to add mini diff to make effect
+        var targetY = startPos.y - endPos.y == 0 ? endPos.y + 0.001f : endPos.y;
+        
+        
         //move anim, make command on one anim, they will complete same time
         var animHandler = objTransform.DOMoveX(endPos.x, duration).SetEase(Ease.Linear).OnComplete(() => IntermediateObjectActions.IntermediateObjectArrivedSuccessfully?.Invoke(obj, goingTo));
         objTransform.DOMoveZ(endPos.z, duration).SetEase(Ease.Linear);
-        objTransform.DOMoveY(endPos.y + 1, duration).SetEase(Ease.OutBack, 20, 0);
+        objTransform.DOMoveY(targetY, duration).SetEase(Ease.OutBack, 20 * 1000f, 0);
         
         //Save/discard Anim
         intermediateObjectsMoveAnims.Add(animHandler);
