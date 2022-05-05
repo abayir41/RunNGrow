@@ -5,15 +5,19 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    public static GameConfig Config { get; private set; }
+    
     private IntermediateObjectController IOCInstance => IntermediateObjectController.Instance;
 
-    [SerializeField]private Transform _leftSide;
-    [SerializeField]private Transform _rightSide;
+    [SerializeField] private GameConfig config;
+    [SerializeField]private Transform leftSide;
+    [SerializeField]private Transform rightSide;
     private Dictionary<Side, int> _pointsOfSide;
 
     private void Awake()
     {
         _pointsOfSide = new Dictionary<Side, int> {{Side.Left, 0}, {Side.Right, 0}};
+        Config = config;
     }
 
     private void Start()
@@ -69,15 +73,15 @@ public class GameController : MonoBehaviour
         var leaveSide = Utilities.GetOtherSide(goingTo);
         var canAnotherObjectGo = true;
         
-        var leftSidePos = _leftSide.position;
-        var rightSidePos = _rightSide.position;
+        var leftSidePos = leftSide.position;
+        var rightSidePos = rightSide.position;
 
         var startPos = goingTo == Side.Right ? leftSidePos : rightSidePos;
         var endPos = goingTo == Side.Right ? rightSidePos : leftSidePos;
         
         while (canAnotherObjectGo)
         {
-            IOCInstance.MoveIntermediateObject(startPos,endPos,1, goingTo);
+            IOCInstance.MoveIntermediateObject(startPos, endPos, Config.DurationOfAnimation, goingTo);
             yield return new WaitForSeconds(delay);
 
             if (_pointsOfSide[leaveSide] == 0)
@@ -93,12 +97,10 @@ public class GameController : MonoBehaviour
         
         var leaveSide = side;
         var goingTo = Utilities.GetOtherSide(side);
-        
-        Debug.Log(goingTo);
-        
+
         if (IOCInstance.IsThereAnyIntermediateObjectMoving()) return;
         if(_pointsOfSide[leaveSide] == 0) return;
 
-        StartCoroutine(StartMovement(goingTo,0.2f));
+        StartCoroutine(StartMovement(goingTo, Config.DelayBetweenTwoIntermediate));
     }
 }
