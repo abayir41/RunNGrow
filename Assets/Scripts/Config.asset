@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c552fc08cbb81264ebbe922d4710a151, type: 3}
   m_Name: Config
   m_EditorClassIdentifier: 
-  amplitude: 0
+  amplitude: 20000
+  durationOfAnimation: 1
+  delayBetweenTwoIntermediate: 0.2
