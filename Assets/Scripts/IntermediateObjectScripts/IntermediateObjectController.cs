@@ -14,12 +14,42 @@ public class IntermediateObjectController : MonoBehaviour
     [SerializeField] private Transform poolObjectsParent;
 
     private List<GameObject> _objectsInPool;
-    private List<TweenerCore<Vector3, Vector3, VectorOptions>> intermediateObjectsMoveAnims;
+    private List<TweenObjectAnims> _intermediateObjectsMoveAnims;
+    private List<GameObject> _activeObjects;
+
+    private readonly struct TweenObjectAnims
+    {
+        public TweenObjectAnims(TweenerCore<Vector3, Vector3, VectorOptions> animX,
+            TweenerCore<Vector3, Vector3, VectorOptions> animY, 
+            TweenerCore<Vector3, Vector3, VectorOptions> animZ)
+        {
+            AnimX = animX;
+            AnimY = animY;
+            AnimZ = animZ;
+        }
+
+        private TweenerCore<Vector3, Vector3, VectorOptions> AnimX { get; }
+        private TweenerCore<Vector3, Vector3, VectorOptions> AnimY { get; }
+        private TweenerCore<Vector3, Vector3, VectorOptions> AnimZ { get; }
+
+        public void SetOnComplete(Action action)
+        {
+            AnimX.OnComplete(() => action?.Invoke());
+        }
+
+        public void KillAllAnims()
+        {
+            AnimX.Kill();
+            AnimY.Kill();
+            AnimZ.Kill();
+        }
+    }
 
     private void Awake()
     {
-        intermediateObjectsMoveAnims = new List<TweenerCore<Vector3, Vector3, VectorOptions>>();
+        _intermediateObjectsMoveAnims = new List<TweenObjectAnims>();
         _objectsInPool = new List<GameObject>();
+        _activeObjects = new List<GameObject>();
         Instance = this;
     }
 
@@ -36,7 +66,7 @@ public class IntermediateObjectController : MonoBehaviour
     }
     
 
-    private void IntermediateObjectArrivedSuccessfully(GameObject obj, Side side)
+    private void IntermediateObjectArrivedSuccessfully(Vector2 size, GameObject obj, Side side)
     {
         obj.SetActive(false);
         
@@ -48,7 +78,7 @@ public class IntermediateObjectController : MonoBehaviour
     
     public bool IsThereAnyIntermediateObjectMoving()
     {
-        return intermediateObjectsMoveAnims.Count > 0;
+        return _intermediateObjectsMoveAnims.Count > 0;
     }
 
     /// <summary>
@@ -58,14 +88,10 @@ public class IntermediateObjectController : MonoBehaviour
     /// <param name="endPos"></param>
     /// <param name="duration"></param>
     /// <param name="goingTo"></param> Side that which side object will arrive
-    public void MoveIntermediateObject(Vector3 startPos, Vector3 endPos, float duration, Side goingTo)
+    public void MoveIntermediateObject(Vector3 startPos, Vector3 endPos, float duration, Side goingTo, Vector2 size)
     {
-        //check if there is any object in the pool, if not create one 
-        if(_objectsInPool.Count == 0)
-            CreatePoolObject();
-
-        //get one obj
-        var obj = _objectsInPool[0];
+        var obj = GetObject();
+        
         var objTransform = obj.transform;
 
         //make it visible
@@ -75,25 +101,37 @@ public class IntermediateObjectController : MonoBehaviour
         //determine which side obj leaving
         var leaveSide = Utilities.GetOtherSide(goingTo);
         
-        //notify that object leave
-        IntermediateObjectActions.IntermediateStartToMove?.Invoke(obj, leaveSide);
-        
-        
         //fix the target y, because if diff is 0, twenn cant make Ease.Outback, so ve have to add mini diff to make effect
         var targetY = startPos.y - endPos.y == 0 ? endPos.y + 0.001f : endPos.y;
         
-        
         //move anim, make command on one anim, they will complete same time
-        var animHandler = objTransform.DOMoveX(endPos.x, duration).SetEase(Ease.Linear).OnComplete(() => IntermediateObjectActions.IntermediateObjectArrivedSuccessfully?.Invoke(obj, goingTo));
-        objTransform.DOMoveZ(endPos.z, duration).SetEase(Ease.Linear);
-        objTransform.DOMoveY(targetY, duration).SetEase(Ease.OutBack, 20 * 1000f, 0);
-        
-        //Save/discard Anim
-        intermediateObjectsMoveAnims.Add(animHandler);
-        animHandler.OnKill(() => intermediateObjectsMoveAnims.Remove(animHandler));
+        var animX = objTransform.DOMoveX(endPos.x, duration).SetEase(Ease.Linear);
+        var animY = objTransform.DOMoveZ(endPos.z, duration).SetEase(Ease.Linear);
+        var animZ = objTransform.DOMoveY(targetY, duration).SetEase(Ease.OutBack, 20 * 1000f, 0);
 
-        //remove from pool
+        var anims = new TweenObjectAnims(animX, animY, animZ);
+        //Save/discard Anim
+        _intermediateObjectsMoveAnims.Add(anims);
+        anims.SetOnComplete(() =>
+        {
+            _intermediateObjectsMoveAnims.Remove(anims);
+            IntermediateObjectActions.IntermediateObjectArrivedSuccessfully?.Invoke(size, obj, goingTo);
+        });
+
+        //remove from pool, add actives
         _objectsInPool.Remove(obj);
+        _activeObjects.Add(obj);
+    }
+
+    //Getting object, integrated with pool system
+    private GameObject GetObject()
+    {
+        //check if there is any object in the pool, if not create one 
+        if(_objectsInPool.Count == 0)
+            CreatePoolObject();
+
+        //get one obj
+        return _objectsInPool[0];
     }
     
     /// <summary>
@@ -109,5 +147,23 @@ public class IntermediateObjectController : MonoBehaviour
 
         //Add to pool
         _objectsInPool.Add(obj);
+    }
+
+    public void KillTheAnimations()
+    {
+        foreach (var obj in _activeObjects)
+        {
+            obj.SetActive(false); 
+            _objectsInPool.Add(obj);
+        }
+        
+        _activeObjects.Clear();
+
+        foreach (var moveAnim in _intermediateObjectsMoveAnims)
+        {
+            moveAnim.KillAllAnims();
+        }
+        
+        _intermediateObjectsMoveAnims.Clear();
     }
 }
