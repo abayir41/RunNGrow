@@ -8,7 +8,7 @@ using DG.Tweening.Plugins.Options;
 
 public class IntermediateObjectController : MonoBehaviour
 {
-    public static IntermediateObjectController Instance;
+    public static IntermediateObjectController Instance { get; private set; }
 
     [SerializeField] private GameObject intermediateObject;
     [SerializeField] private Transform poolObjectsParent;
@@ -20,16 +20,19 @@ public class IntermediateObjectController : MonoBehaviour
     private readonly struct TweenObjectAnims
     {
         public TweenObjectAnims(TweenerCore<Vector3, Vector3, VectorOptions> animX,
-            TweenerCore<Vector3, Vector3, VectorOptions> animY, 
+            TweenerCore<Vector3, Vector3, VectorOptions> animYp1,
+            TweenerCore<Vector3, Vector3, VectorOptions> animYp2,
             TweenerCore<Vector3, Vector3, VectorOptions> animZ)
         {
             AnimX = animX;
-            AnimY = animY;
+            AnimYp1 = animYp1;
+            AnimYp2 = animYp2;
             AnimZ = animZ;
         }
 
         private TweenerCore<Vector3, Vector3, VectorOptions> AnimX { get; }
-        private TweenerCore<Vector3, Vector3, VectorOptions> AnimY { get; }
+        private TweenerCore<Vector3, Vector3, VectorOptions> AnimYp1 { get; }
+        private TweenerCore<Vector3, Vector3, VectorOptions> AnimYp2 { get; }
         private TweenerCore<Vector3, Vector3, VectorOptions> AnimZ { get; }
 
         public void SetOnComplete(Action action)
@@ -40,7 +43,8 @@ public class IntermediateObjectController : MonoBehaviour
         public void KillAllAnims()
         {
             AnimX.Kill();
-            AnimY.Kill();
+            AnimYp1.Kill();
+            AnimYp2.Kill();
             AnimZ.Kill();
         }
     }
@@ -87,7 +91,8 @@ public class IntermediateObjectController : MonoBehaviour
     /// <param name="startPos"></param>
     /// <param name="endPos"></param>
     /// <param name="duration"></param>
-    /// <param name="goingTo"></param> Side that which side object will arrive
+    /// <param name="goingTo">Side that which side object will arrive</param>
+    /// <param name="size"></param>
     public void MoveIntermediateObject(Vector3 startPos, Vector3 endPos, float duration, Side goingTo, Vector2 size)
     {
         var obj = GetObject();
@@ -98,18 +103,15 @@ public class IntermediateObjectController : MonoBehaviour
         objTransform.position = startPos;
         obj.SetActive(true);
 
-        //determine which side obj leaving
-        var leaveSide = Utilities.GetOtherSide(goingTo);
-        
-        //fix the target y, because if diff is 0, twenn cant make Ease.Outback, so ve have to add mini diff to make effect
-        var targetY = startPos.y - endPos.y == 0 ? endPos.y + 0.001f : endPos.y;
-        
+        var highestY = Math.Max(startPos.y, endPos.y);
+
         //move anim, make command on one anim, they will complete same time
         var animX = objTransform.DOMoveX(endPos.x, duration).SetEase(Ease.Linear);
-        var animY = objTransform.DOMoveZ(endPos.z, duration).SetEase(Ease.Linear);
-        var animZ = objTransform.DOMoveY(targetY, duration).SetEase(Ease.OutBack, 20 * 1000f, 0);
+        var animYp1 = objTransform.DOMoveY(highestY + GameController.Config.Amplitude, duration/2).SetEase(Ease.OutCirc);
+        var animYp2 = objTransform.DOMoveY(endPos.y, duration/2).SetDelay(duration/2).SetEase(Ease.InCirc);
+        var animZ = objTransform.DOMoveZ(endPos.z, duration).SetEase(Ease.Linear);
 
-        var anims = new TweenObjectAnims(animX, animY, animZ);
+        var anims = new TweenObjectAnims(animX, animYp1, animYp2, animZ);
         //Save/discard Anim
         _intermediateObjectsMoveAnims.Add(anims);
         anims.SetOnComplete(() =>
@@ -123,7 +125,10 @@ public class IntermediateObjectController : MonoBehaviour
         _activeObjects.Add(obj);
     }
 
-    //Getting object, integrated with pool system
+    /// <summary>
+    /// Getting object, integrated with pool system
+    /// </summary>
+    /// <returns>Pool Object</returns>
     private GameObject GetObject()
     {
         //check if there is any object in the pool, if not create one 
