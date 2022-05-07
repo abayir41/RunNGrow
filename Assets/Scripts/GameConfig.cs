@@ -11,10 +11,12 @@ public class GameConfig : ScriptableObject
     [SerializeField] private float amplitude;
     [SerializeField] private float durationOfAnimation;
 
-    
+
+    public Vector2 StartPoint => startPoint;
     public float DelayBetweenTwoIntermediate => delayBetweenTwoIntermediate;
-    
+
     [Header("Game Dynamic Configuration")] 
+    [SerializeField] private Vector2 startPoint;
     [SerializeField] private float delayBetweenTwoIntermediate;
 
 }

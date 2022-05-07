@@ -7,54 +7,50 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    public static GameConfig Config { get; private set; }
+    public static GameController Instance { get; private set; }
     
+    public static GameConfig Config { get; private set; }
+    [SerializeField] private GameConfig config;
     private IntermediateObjectController IOCInstance => IntermediateObjectController.Instance;
 
-    [SerializeField] private GameConfig config;
-    [SerializeField]private Transform leftSide;
-    [SerializeField]private Transform rightSide;
-    private Dictionary<Side, Vector2> _pointsOfSide;
+    #region Character
+    
+    [SerializeField] private GameObject leftCharacter;
+    [SerializeField] private GameObject rightCharacter;
+
+    public Dictionary<Side, GameObject> Characters { get; private set; }
+    public Dictionary<Side, CharController> CharacterControllers { get; private set; }
+    public Dictionary<Side, Transform> CharacterTransforms { get; private set; }
+    public Dictionary<Side, Vector2> PointOfSide => new Dictionary<Side, Vector2>
+    {
+        {Side.Left, CharacterControllers[Side.Left].PointOfChar}, 
+        {Side.Right, CharacterControllers[Side.Right].PointOfChar}
+    };
+    
+    #endregion
+
     private Coroutine _currentIntermediateObjectSpawner;
 
     private void Awake()
     {
-        _pointsOfSide = new Dictionary<Side, Vector2> {{Side.Left, Vector2.zero}, {Side.Right, Vector2.zero}};
+        Instance = this;
         Config = config;
-    }
+        Characters = new Dictionary<Side, GameObject>{{Side.Left, leftCharacter}, {Side.Right, rightCharacter}};
 
-    private void Start()
-    {
-        _pointsOfSide[Side.Left] = new Vector2(10,5);
-        _pointsOfSide[Side.Right] = new Vector2(10,5);
-    }
-
-    #region Subscriptions
-    
-    private void OnEnable()
-    {
-        IntermediateObjectActions.IntermediateObjectArrivedSuccessfully += IntermediateObjectArrivedSuccessfully;
-        IntermediateObjectActions.IntermediateStartToMove += IntermediateStartToMove;
-    }
-    
-    private void OnDisable()
-    {
-        IntermediateObjectActions.IntermediateObjectArrivedSuccessfully -= IntermediateObjectArrivedSuccessfully;
-        IntermediateObjectActions.IntermediateStartToMove -= IntermediateStartToMove;
+        CharacterTransforms = new Dictionary<Side, Transform>
+        {
+            {Side.Left, Characters[Side.Left].transform},
+            {Side.Right, Characters[Side.Right].transform}
+        };
+        
+        CharacterControllers = new Dictionary<Side, CharController>
+        {
+            {Side.Left, Characters[Side.Left].GetComponent<CharController>()},
+            {Side.Right, Characters[Side.Right].GetComponent<CharController>()}
+        };
+        
     }
     
-    private void IntermediateObjectArrivedSuccessfully(Vector2 size ,GameObject obj, Side goingTo)
-    {
-        _pointsOfSide[goingTo] += size;
-    }
-    
-    private void IntermediateStartToMove(Vector2 sizeOfLeavePart ,Side leaveFrom)
-    {
-        _pointsOfSide[leaveFrom] -= sizeOfLeavePart;
-    }
-    
-    #endregion
-
     
     void Update()
     {
@@ -69,73 +65,17 @@ public class GameController : MonoBehaviour
                 ScreenTouched(touchPos.x > (float) Screen.width / 2 ? Side.Right : Side.Left);
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            ScreenTouched(Side.Left);
-        }
-        
-        if(Input.GetKeyDown(KeyCode.D))
-            IOCInstance.KillTheAnimations();
     }
     
     
-    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    private IEnumerator StartMovement(Side goingTo, float delay)
-    {
-        var leaveSide = Utilities.GetOtherSide(goingTo);
-        var canAnotherObjectGo = true;
-        
-        var leftSidePos = leftSide.position;
-        var rightSidePos = rightSide.position;
-
-        var startPos = goingTo == Side.Right ? leftSidePos : rightSidePos;
-        var endPos = goingTo == Side.Right ? rightSidePos : leftSidePos;
-        
-        while (canAnotherObjectGo)
-        {
-            var sizeX = 0;
-            var sizeY = 0;
-
-            var sizeOfObject = _pointsOfSide[leaveSide];
-            
-            if (sizeOfObject.x != 1.0f)
-                sizeX = 1;
-            
-            if (sizeOfObject.y != 1.0f)
-                sizeY = 1;
-            
-            if (sizeOfObject.x == 1 && sizeOfObject.y == 1)
-            {
-                sizeX = 1;
-                sizeY = 1;
-            }
-            
-            var resultSize = new Vector2(sizeX, sizeY);
-            
-            IntermediateObjectActions.IntermediateStartToMove?.Invoke(resultSize, leaveSide);
-            
-            IOCInstance.MoveIntermediateObject(startPos, endPos, Config.DurationOfAnimation, goingTo, resultSize);
-            yield return new WaitForSeconds(delay);
-
-            if (_pointsOfSide[leaveSide] == Vector2.zero)
-            {
-                canAnotherObjectGo = false;
-            }
-        }
-    }
 
 
     private void ScreenTouched(Side side)
     {
-        
-        var leaveSide = side;
-        var goingTo = Utilities.GetOtherSide(side);
-
         if (IOCInstance.IsThereAnyIntermediateObjectMoving()) return;
-        if(_pointsOfSide[leaveSide] == Vector2.zero) return;
+        if(CharacterControllers[side].IsCharacterGhostMode) return;
 
-        _currentIntermediateObjectSpawner = StartCoroutine(StartMovement(goingTo, Config.DelayBetweenTwoIntermediate));
+        _currentIntermediateObjectSpawner = StartCoroutine(CharacterControllers[side].StartTransfer(Config.DelayBetweenTwoIntermediate));
     }
     
 }
