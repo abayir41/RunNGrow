@@ -42,6 +42,9 @@ public class Utilities : MonoBehaviour
                 var resultMx = (int) (input.x * amount);
                 return new Vector2(resultMx, input.y);
             
+            case NormalObstacleType.Destroyer:
+                return new Vector2(-1,-1);
+            
             default:
                 return new Vector2(0, 0);
         }

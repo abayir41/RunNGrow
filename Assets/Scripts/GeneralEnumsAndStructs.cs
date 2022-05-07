@@ -14,4 +14,5 @@ public enum NormalObstacleType
     ExtractHeight,
     MultiplyHeight,
     DivideHeight,
+    Destroyer
 }
