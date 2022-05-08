@@ -13,12 +13,8 @@ public class NormalObstacleObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Degdi");
-        
         if (other.GetComponent<CharController>().IsCharacterGhostMode) return;
 
-        Debug.Log("bruh");
-        
         GameActions.NormalObstacleColl?.Invoke(this, other.GetComponent<CharController>());
     }
 }   
