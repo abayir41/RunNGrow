@@ -1,3 +1,5 @@
+using System;
+
 public enum Side
 {
     Left,
@@ -14,5 +16,13 @@ public enum NormalObstacleType
     ExtractHeight,
     MultiplyHeight,
     DivideHeight,
-    Destroyer
+    Destroyer,
+    Nothing
+}
+
+[Serializable]
+public struct ObstacleStruct
+{
+    public NormalObstacleType obstacleType;
+    public int obstaclePoint;
 }
