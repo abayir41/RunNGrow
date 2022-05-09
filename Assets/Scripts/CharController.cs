@@ -2,7 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using DG.Tweening;
+using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
@@ -19,14 +22,46 @@ public class CharController : MonoBehaviour
     public bool CanCharShrinkMore { get; private set; }
     public Vector2 PointOfChar { get; private set; }
     public bool IsCharacterGhostMode { get; private set; }
+
+    //Visuals
+    [SerializeField] private List<GameObject> partOfChars;
+    private List<MeshRenderer> _meshRenderersOfParts;
+    private Dictionary<Transform, ScaleMode> _transformsOfParts;
     
-    //Other
-    
-    
+    //Fixing Body
+    [Header("BodyFixing")]
+    [SerializeField] private Transform lowerBodyPoint;
+    [SerializeField] private Transform upperBodyPoint;
+    [SerializeField] private Transform cylinderLowerPoint;
+    [SerializeField] private Transform cylinderUpPoint;
+    [SerializeField] private Transform upperBodyMovePoint;
+    [SerializeField] private Vector3 upperBodyMoveVector;
+    private const float ThresholdOfBodyFixing = 0.01f;
+
+    [Button]
+    private void CalculateUpperBodyMoveVector()
+    {
+        upperBodyMoveVector = upperBodyPoint.position - lowerBodyPoint.position;
+        upperBodyMoveVector = upperBodyMoveVector.normalized;
+    }
+
+    [Button]
+    private void MoveUpperBody()
+    {
+        upperBodyMovePoint.position += upperBodyMoveVector;
+    }
+
     
     private void Awake()
     {
         CanCharShrinkMore = true;
+        _meshRenderersOfParts = new List<MeshRenderer>();
+        foreach (var partOfChar in partOfChars)
+        {
+            _meshRenderersOfParts.AddRange(partOfChar.GetComponentsInChildren<MeshRenderer>());
+        }
+        _transformsOfParts = partOfChars.Select(o => new KeyValuePair<Transform, ScaleMode>(o.GetComponent<Transform>(), o.GetComponent<CharPart>().Mode)).ToDictionary(pair => pair.Key,pair => pair.Value);
+
     }
 
     private void Start()
@@ -41,8 +76,7 @@ public class CharController : MonoBehaviour
         GameActions.NormalObstacleColl += NormalObstacleColl;
     }
     
-
-
+    
     private void OnDisable()
     {
         IntermediateObjectActions.IntermediateObjectArrivedSuccessfully -= IntermediateObjectArrivedSuccessfully;
@@ -64,8 +98,11 @@ public class CharController : MonoBehaviour
         CanCharShrinkMore = true;
         
 
-        var result =  new Vector3(PointOfChar.x, PointOfChar.y, 1);
-        transform.DOScale(result, 0.5f);
+        
+        _transformsOfParts.ForEach(pair =>
+        {
+            pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value, PointOfChar.x), 0.5f);
+        });
     }
     
     private void IntermediateStartedToMove(Vector2 size, Side side)
@@ -82,8 +119,10 @@ public class CharController : MonoBehaviour
         }
 
 
-        var result = new Vector3(PointOfChar.x, PointOfChar.y, 1);
-        transform.DOScale(result, 0.5f);
+        _transformsOfParts.ForEach(pair =>
+        {
+            pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value, PointOfChar.x), 0.5f);
+        });
 
     }
     
@@ -132,6 +171,27 @@ public class CharController : MonoBehaviour
     #endregion
 
     
+    private void Update()
+    {
+        lowerBodyPoint.LookAt(upperBodyPoint);
+
+
+        var lowerUpperBodyDistance = Vector3.Distance(lowerBodyPoint.position, upperBodyPoint.position);
+        var cylinderLenght = Vector3.Distance(cylinderLowerPoint.position, cylinderUpPoint.position);
+
+        
+        //fix body
+        if (Math.Abs(cylinderLenght - lowerUpperBodyDistance) > ThresholdOfBodyFixing)
+        {
+            Debug.Log("wtf");
+            if (cylinderLenght < lowerUpperBodyDistance)
+                cylinderLowerPoint.localScale += Vector3.forward * 0.0001f;
+            else
+                cylinderLowerPoint.localScale -= Vector3.forward * 0.0001f;
+        }
+
+    }
+
     private void NormalObstacleColl(NormalObstacleObject obstacle, CharController @char)
     {
         if (@char != this) return;
@@ -142,28 +202,45 @@ public class CharController : MonoBehaviour
         var y = resultAfterHit.y <= 0;
 
         PointOfChar = resultAfterHit;
-        
-        transform.DOScale(new Vector3(x ? 1 : resultAfterHit.x, y ? 1 : resultAfterHit.y, 1), 0.5f).OnComplete(() =>
+
+        if (x || y)
         {
-            if (x || y)
+            _transformsOfParts.ForEach(pair =>
             {
-                SetCharToGhostMode();
-            }
-        });
+                pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value, 1), 0.5f).OnComplete(SetCharToGhostMode);
+            });
+        }else if (obstacle.Type == NormalObstacleType.PartRemover)
+        {
+            
+        }
+        else
+        {
+            _transformsOfParts.ForEach(pair =>
+            {
+                pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value, PointOfChar.x), 0.5f);
+            });
+        }
+        
+        
 
     }
 
     private void SetCharToGhostMode()
     {
-        transform.localScale = Vector3.one;
+        _transformsOfParts.ForEach(pair =>
+        {
+            pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value, 1), 0.5f);
+        });
         PointOfChar = Vector2.zero;
-        GetComponent<MeshRenderer>().enabled = false;
+        _meshRenderersOfParts.ForEach(meshRenderer => meshRenderer.enabled = false);
         IsCharacterGhostMode = true;
     }
 
     private void SetCharToVisibleMode()
     {
-        GetComponent<MeshRenderer>().enabled = true;
+        _meshRenderersOfParts.ForEach(meshRenderer => meshRenderer.enabled = true);
         IsCharacterGhostMode = false;
     }
+    
+    
 }
