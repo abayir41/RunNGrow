@@ -169,27 +169,34 @@ public class CharController : MonoBehaviour
     }
 
     #endregion
-
     
     private void Update()
     {
-        lowerBodyPoint.LookAt(upperBodyPoint);
-
-
-        var lowerUpperBodyDistance = Vector3.Distance(lowerBodyPoint.position, upperBodyPoint.position);
-        var cylinderLenght = Vector3.Distance(cylinderLowerPoint.position, cylinderUpPoint.position);
 
         
-        //fix body
-        if (Math.Abs(cylinderLenght - lowerUpperBodyDistance) > ThresholdOfBodyFixing)
+
+
+        //Fixing Body
+        var lowerUpperBodyDistance = Vector3.Distance(lowerBodyPoint.position, upperBodyPoint.position);
+        var cylinderLenght = Vector3.Distance(cylinderLowerPoint.position, cylinderUpPoint.position);
+        
+        while (Math.Abs(cylinderLenght - lowerUpperBodyDistance) > ThresholdOfBodyFixing)
         {
-            Debug.Log("wtf");
             if (cylinderLenght < lowerUpperBodyDistance)
-                cylinderLowerPoint.localScale += Vector3.forward * 0.0001f;
+                cylinderLowerPoint.localScale += Vector3.forward * 0.00001f;
             else
-                cylinderLowerPoint.localScale -= Vector3.forward * 0.0001f;
+                cylinderLowerPoint.localScale -= Vector3.forward * 0.00001f;
+            
+            lowerUpperBodyDistance = Vector3.Distance(lowerBodyPoint.position, upperBodyPoint.position);
+            cylinderLenght = Vector3.Distance(cylinderLowerPoint.position, cylinderUpPoint.position);
         }
 
+    }
+
+    private void LateUpdate()
+    {
+        //Fixing Body
+        lowerBodyPoint.LookAt(upperBodyPoint.position);
     }
 
     private void NormalObstacleColl(NormalObstacleObject obstacle, CharController @char)
