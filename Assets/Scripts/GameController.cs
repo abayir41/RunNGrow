@@ -11,8 +11,18 @@ public class GameController : MonoBehaviour
     
     public static GameConfig Config { get; private set; }
     [SerializeField] private GameConfig config;
-    private IntermediateObjectController IOCInstance => IntermediateObjectController.Instance;
 
+
+    public Axis MapAlongAxis => alongAxis;
+    [SerializeField] private Axis alongAxis;
+    
+    #region Controllers
+
+    private IntermediateObjectController IOCInstance => IntermediateObjectController.Instance;
+    private ObstacleController OController => ObstacleController.Instance;
+
+    #endregion
+    
     #region Character
     
     [SerializeField] private GameObject leftCharacter;
@@ -29,6 +39,8 @@ public class GameController : MonoBehaviour
     
     #endregion
 
+    [SerializeField] private List<MapConfig> maps;
+    
     private Coroutine _currentIntermediateObjectSpawner;
 
     private void Awake()
@@ -50,8 +62,12 @@ public class GameController : MonoBehaviour
         };
         
     }
-    
-    
+
+    private void Start()
+    {
+        OController.SpawnMapObstacles(maps[0]);
+    }
+
     void Update()
     {
 
