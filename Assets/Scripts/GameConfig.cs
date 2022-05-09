@@ -19,4 +19,13 @@ public class GameConfig : ScriptableObject
     [SerializeField] private Vector2 startPoint;
     [SerializeField] private float delayBetweenTwoIntermediate;
 
+
+    public float DistanceBetweenObstacle => distanceBetweenObstacle;
+    public Material RedColor => redColor;
+    public Material GreenColor => greenColor;
+    
+    [Header("Obstacles Configurations")] 
+    [SerializeField] private float distanceBetweenObstacle;
+    [SerializeField] private Material redColor;
+    [SerializeField] private Material greenColor;
 }
