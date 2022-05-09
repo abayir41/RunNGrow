@@ -45,8 +45,45 @@ public class Utilities : MonoBehaviour
             case NormalObstacleType.Destroyer:
                 return new Vector2(-1,-1);
             
+            case NormalObstacleType.PartRemover:
+                return input - Vector2.up * amount;
+            
             default:
                 return new Vector2(0, 0);
+        }
+    }
+
+    public static Vector3 ScaleModeToVector(ScaleMode mode, float value)
+    {
+        switch (mode)
+        {
+            case ScaleMode.XYZ:
+                return Vector3.one * value;
+            
+            case ScaleMode.XY:
+                return new Vector3(value, value, 1);
+            
+            case ScaleMode.XZ:
+                return new Vector3(value, 1, value);
+            
+            case ScaleMode.YZ:
+                return new Vector3(1, value, value);
+            
+            case ScaleMode.X:
+                return new Vector3(value, 1, 1);
+            
+            case ScaleMode.Y:
+                return new Vector3(1, value, 1);
+            
+            case ScaleMode.Z:
+                return new Vector3(1, 1, value);
+            
+            case ScaleMode.NoScaling:
+                return Vector3.one;
+            
+            default:
+                return Vector3.zero;
+            
         }
     }
 }
