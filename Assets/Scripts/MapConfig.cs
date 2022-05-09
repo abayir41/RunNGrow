@@ -8,10 +8,10 @@ public class MapConfig : ScriptableObject
 {
 
     [HorizontalGroup("Base")] [BoxGroup("Base/Left")]
-    public List<ObstacleStruct> LeftSideObstacles;
+    public List<ObstacleStruct> leftSideObstacles;
 
     
     [BoxGroup("Base/Right")]
-    public List<ObstacleStruct> RightSideObstacles;
+    public List<ObstacleStruct> rightSideObstacles;
     
 }
