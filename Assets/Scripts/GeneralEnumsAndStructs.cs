@@ -17,6 +17,7 @@ public enum NormalObstacleType
     MultiplyHeight,
     DivideHeight,
     Destroyer,
+    PartRemover,
     Nothing
 }
 
@@ -25,4 +26,23 @@ public struct ObstacleStruct
 {
     public NormalObstacleType obstacleType;
     public int obstaclePoint;
+}
+
+public enum ScaleMode
+{
+    X,
+    Y,
+    Z,
+    XY,
+    XZ,
+    YZ,
+    XYZ,
+    NoScaling
+}
+
+public enum Axis
+{
+    X,
+    Y,
+    Z
 }
