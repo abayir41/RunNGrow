@@ -15,7 +15,13 @@ public class NormalObstacleObject : MonoBehaviour
     private ObstacleStruct _obstacleProperties;
 
     [SerializeField] private MeshRenderer middlePanel;
-    
+
+
+    private float force;
+    private void Awake()
+    {
+        force = 5f;
+    }
 
     public void SetProperties(ObstacleStruct prop)
     {
@@ -60,5 +66,10 @@ public class NormalObstacleObject : MonoBehaviour
                 break;
             
         }
+    }
+
+    private void Update()
+    {
+        transform.position += Vector3.left * (Time.deltaTime * force);
     }
 }   
