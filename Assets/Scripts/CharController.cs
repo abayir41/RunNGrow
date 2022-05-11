@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -28,6 +30,12 @@ public class CharController : MonoBehaviour
     private List<MeshRenderer> _meshRenderersOfParts;
     private Dictionary<Transform, ScaleMode> _transformsOfParts;
     
+    //cofiguration
+    [SerializeField] private float widthScalingCoef;
+    [SerializeField] private float heightScalingCoef;
+    [SerializeField] private float minWidth;
+    [SerializeField] private float minHeight;
+    
     //Fixing Body
     [Header("BodyFixing")]
     [SerializeField] private Transform lowerBodyPoint;
@@ -45,13 +53,7 @@ public class CharController : MonoBehaviour
         upperBodyMoveVector = upperBodyMoveVector.normalized;
     }
 
-    [Button]
-    private void MoveUpperBody()
-    {
-        upperBodyMovePoint.position += upperBodyMoveVector;
-    }
 
-    
     private void Awake()
     {
         CanCharShrinkMore = true;
@@ -67,6 +69,9 @@ public class CharController : MonoBehaviour
     private void Start()
     {
         PointOfChar = GameController.Config.StartPoint;
+
+        var anims = GetAnimCharToAPoint(PointOfChar, 0.5f);
+        anims.ForEach(core => core.Complete());
     }
 
     private void OnEnable()
@@ -97,12 +102,9 @@ public class CharController : MonoBehaviour
         
         CanCharShrinkMore = true;
         
-
         
-        _transformsOfParts.ForEach(pair =>
-        {
-            pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value, PointOfChar.x), 0.5f);
-        });
+        GetAnimCharToAPoint(PointOfChar,0.5f);
+
     }
     
     private void IntermediateStartedToMove(Vector2 size, Side side)
@@ -111,19 +113,15 @@ public class CharController : MonoBehaviour
         
         PointOfChar -= size;
 
+        
+        GetAnimCharToAPoint(PointOfChar,0.5f);
+
+        
         if (PointOfChar == Vector2.zero)
         {
             CanCharShrinkMore = false;
             SetCharToGhostMode();
-            return;
         }
-
-
-        _transformsOfParts.ForEach(pair =>
-        {
-            pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value, PointOfChar.x), 0.5f);
-        });
-
     }
     
     
@@ -172,10 +170,7 @@ public class CharController : MonoBehaviour
     
     private void Update()
     {
-
         
-
-
         //Fixing Body
         var lowerUpperBodyDistance = Vector3.Distance(lowerBodyPoint.position, upperBodyPoint.position);
         var cylinderLenght = Vector3.Distance(cylinderLowerPoint.position, cylinderUpPoint.position);
@@ -205,40 +200,65 @@ public class CharController : MonoBehaviour
 
         var resultAfterHit = Utilities.NormalObstacleToPoint(obstacle.Type, PointOfChar, obstacle.ObstaclePoint);
 
-        var x = resultAfterHit.x <= 0;
-        var y = resultAfterHit.y <= 0;
+        var x = resultAfterHit.x < 0;
+        var y = resultAfterHit.y < 0;
 
         PointOfChar = resultAfterHit;
 
         if (x || y)
         {
-            _transformsOfParts.ForEach(pair =>
-            {
-                pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value, 1), 0.5f).OnComplete(SetCharToGhostMode);
-            });
+            GetAnimCharToAPoint(0,0,0.5f);
+
+            PointOfChar = Vector2.zero;
+            
+            SetCharToGhostMode();
+            
         }else if (obstacle.Type == NormalObstacleType.PartRemover)
         {
-            
+            GetAnimCharToAPoint(PointOfChar, 0.5f);
         }
         else
         {
-            _transformsOfParts.ForEach(pair =>
-            {
-                pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value, PointOfChar.x), 0.5f);
-            });
+            GetAnimCharToAPoint(PointOfChar, 0.5f);
         }
         
-        
+    }
 
+    private List<TweenerCore<Vector3,Vector3,VectorOptions>> GetAnimCharToAPoint(float width, float height, float duration)
+    {
+        var anims = new List<TweenerCore<Vector3, Vector3, VectorOptions>>();
+        
+        _transformsOfParts.ForEach(pair =>
+        {
+           var animScale = pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value,minWidth + ((width - 1) * widthScalingCoef)), duration);
+           anims.Add(animScale);
+        });
+
+       var anim =  upperBodyMovePoint.DOMove(upperBodyPoint.position + upperBodyMoveVector *  (minHeight + heightScalingCoef * (height-1)), duration);
+       anims.Add(anim);
+
+       return anims;
+    }
+    
+    private List<TweenerCore<Vector3,Vector3,VectorOptions>> GetAnimCharToAPoint(Vector2 sizeVector, float duration)
+    {
+        var anims = new List<TweenerCore<Vector3, Vector3, VectorOptions>>();
+        
+        _transformsOfParts.ForEach(pair =>
+        {
+            var animScale = pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value,minWidth + ((sizeVector.x - 1) * widthScalingCoef)), duration);
+            anims.Add(animScale);
+        });
+        
+        
+        var anim =  upperBodyMovePoint.DOMove(lowerBodyPoint.position + upperBodyMoveVector *  (minHeight + heightScalingCoef * (sizeVector.y - 1)), duration);
+        anims.Add(anim);
+        
+        return anims;
     }
 
     private void SetCharToGhostMode()
     {
-        _transformsOfParts.ForEach(pair =>
-        {
-            pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value, 1), 0.5f);
-        });
-        PointOfChar = Vector2.zero;
         _meshRenderersOfParts.ForEach(meshRenderer => meshRenderer.enabled = false);
         IsCharacterGhostMode = true;
     }
