@@ -25,12 +25,12 @@ MonoBehaviour:
     obstaclePoint: 0
   rightSideObstacles:
   - obstacleType: 0
-    obstaclePoint: 6
+    obstaclePoint: 1
   - obstacleType: 0
     obstaclePoint: 4
-  - obstacleType: 0
+  - obstacleType: 4
     obstaclePoint: 8
   - obstacleType: 0
     obstaclePoint: 1
-  - obstacleType: 0
+  - obstacleType: 4
     obstaclePoint: 2

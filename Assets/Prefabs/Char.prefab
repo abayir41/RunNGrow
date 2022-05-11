@@ -957,7 +957,6 @@ GameObject:
   - component: {fileID: 2534547019817337492}
   - component: {fileID: 4225825443434071495}
   - component: {fileID: 3598712731760455393}
-  - component: {fileID: 4240594237791611740}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -972,9 +971,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4769555818846506166}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.038347274, y: 0.45948368, z: 6.3555627}
-  m_LocalScale: {x: 6.37227, y: 6.372266, z: 6.3722663}
+  m_LocalRotation: {x: 0.7071069, y: -0.00000001117587, z: -0.00000001117587, w: 0.70710677}
+  m_LocalPosition: {x: 0, y: 0, z: 6.372266}
+  m_LocalScale: {x: 0.1, y: 6.3722653, z: 0.1}
   m_Children:
   - {fileID: 2782999945117171531}
   m_Father: {fileID: 8435168906774551159}
@@ -1029,20 +1028,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &4240594237791611740
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4769555818846506166}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &7680006441382585837
 GameObject:
   m_ObjectHideFlags: 0
@@ -1168,7 +1153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b733ae035f82d9245bc5c929f0747228, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sideOfChar: 1
+  sideOfChar: 0
   partOfChars:
   - {fileID: 2583608049246602898}
   - {fileID: 7680006441893878037}
@@ -1183,6 +1168,10 @@ MonoBehaviour:
   - {fileID: 4260258159411216448}
   - {fileID: 4260258159382448292}
   - {fileID: 4260258159112382718}
+  widthScalingCoef: 1
+  heightScalingCoef: 1
+  minWidth: 1
+  minHeight: 0.00001
   lowerBodyPoint: {fileID: 7208982567473077192}
   upperBodyPoint: {fileID: 6499763403226237793}
   cylinderLowerPoint: {fileID: 8435168906774551159}
@@ -2332,8 +2321,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7807845418109874555}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.026708536, y: 0.026708536, z: 0.01}
+  m_LocalPosition: {x: 0.009, y: 0.039, z: -0.017}
+  m_LocalScale: {x: 1, y: 1, z: 0.046739}
   m_Children:
   - {fileID: 2534547019817337492}
   m_Father: {fileID: 7208982567473077192}

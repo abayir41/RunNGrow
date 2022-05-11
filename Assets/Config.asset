@@ -16,6 +16,6 @@ MonoBehaviour:
   durationOfAnimation: 1
   startPoint: {x: 1, y: 1}
   delayBetweenTwoIntermediate: 0.2
-  distanceBetweenObstacle: 5
+  distanceBetweenObstacle: 30
   redColor: {fileID: 2100000, guid: d2b9c4cf6f39fbc40bb21ccaaed540e0, type: 2}
   greenColor: {fileID: 2100000, guid: ecfe70d2776569c48a67466b7cca5642, type: 2}
