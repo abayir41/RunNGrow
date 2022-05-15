@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftSideObstacles:
   - obstacleType: 0
-    obstaclePoint: 5
+    obstaclePoint: 4
   - obstacleType: 1
-    obstaclePoint: 1
+    obstaclePoint: 4
   - obstacleType: 2
     obstaclePoint: 2
   - obstacleType: 10

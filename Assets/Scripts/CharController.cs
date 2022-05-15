@@ -8,6 +8,7 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
+using UnityEditor;
 using UnityEngine;
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
@@ -25,16 +26,20 @@ public class CharController : MonoBehaviour
     public Vector2 PointOfChar { get; private set; }
     public bool IsCharacterGhostMode { get; private set; }
 
+    [ShowIf("sideOfChar", Side.Middle)] 
+    [SerializeField] private Transform handPosition; 
+    private Transform BossPos => ControllerInstance.BossTransform;
+
     //Visuals
-    [SerializeField] private List<GameObject> partOfChars;
+    private List<GameObject> _partOfChars;
     private List<MeshRenderer> _meshRenderersOfParts;
     private Dictionary<Transform, ScaleMode> _transformsOfParts;
     
-    //cofiguration
-    [SerializeField] private float widthScalingCoef;
-    [SerializeField] private float heightScalingCoef;
-    [SerializeField] private float minWidth;
-    [SerializeField] private float minHeight;
+    //configuration
+    private float WidthScalingCoefficient => Config.WidthScalingCoefficient;
+    private float HeightScalingCoefficient => Config.HeightScalingCoefficient;
+    private float MinWidth => Config.MinWidth;
+    private float MinHeight => Config.MinHeight;
     
     //Fixing Body
     [Header("BodyFixing")]
@@ -44,6 +49,7 @@ public class CharController : MonoBehaviour
     [SerializeField] private Transform cylinderUpPoint;
     [SerializeField] private Transform upperBodyMovePoint;
     [SerializeField] private Vector3 upperBodyMoveVector;
+    private Vector3 _diffVectorForMoveBodyPartAndLowerBody;
     private const float ThresholdOfBodyFixing = 0.01f;
 
     [Button]
@@ -56,20 +62,41 @@ public class CharController : MonoBehaviour
 
     private void Awake()
     {
-        CanCharShrinkMore = true;
+        if (sideOfChar != Side.Middle)
+        {
+            CanCharShrinkMore = true;
+        }
+        else
+        {
+            CanCharShrinkMore = false;
+        }
+        
         _meshRenderersOfParts = new List<MeshRenderer>();
-        foreach (var partOfChar in partOfChars)
+
+        var charParts = GetComponentsInChildren<CharPart>().ToList();
+        _partOfChars = charParts.Select(part => part.gameObject).ToList();
+        foreach (var partOfChar in _partOfChars)
         {
             _meshRenderersOfParts.AddRange(partOfChar.GetComponentsInChildren<MeshRenderer>());
         }
-        _transformsOfParts = partOfChars.Select(o => new KeyValuePair<Transform, ScaleMode>(o.GetComponent<Transform>(), o.GetComponent<CharPart>().Mode)).ToDictionary(pair => pair.Key,pair => pair.Value);
+        _transformsOfParts = _partOfChars.Select(o => new KeyValuePair<Transform, ScaleMode>(o.GetComponent<Transform>(), o.GetComponent<CharPart>().Mode)).ToDictionary(pair => pair.Key,pair => pair.Value);
 
+        _diffVectorForMoveBodyPartAndLowerBody = lowerBodyPoint.position - upperBodyMovePoint.position;
     }
 
     private void Start()
     {
-        PointOfChar = GameController.Config.StartPoint;
-
+        if (sideOfChar != Side.Middle)
+        {
+            PointOfChar = GameController.Config.StartPoint;
+        }
+        else
+        {
+            PointOfChar = GameController.Config.StartPoint;
+            //PointOfChar = Vector2.zero;
+            //SetCharToGhostMode();
+        }
+        
         var anims = GetAnimCharToAPoint(PointOfChar, 0.5f);
         anims.ForEach(core => core.Complete());
     }
@@ -126,20 +153,50 @@ public class CharController : MonoBehaviour
     
     
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public IEnumerator StartTransfer(float delay)
+    public IEnumerator StartTransfer(Side goingTo)
     {
-        var goingTo = Utilities.GetOtherSide(SideOfChar);
         var leaveSide = SideOfChar;
 
+        var delayMin = Config.DelayMin;
+        var delayMax = Config.DelayMax;
+        var scaleMin = Config.MinScaleForDelay;
+        var scaleMax = Config.MaxScaleForDelay;
 
         while (CanCharShrinkMore)
         {
-            var leftSidePos = ControllerInstance.CharacterTransforms[Side.Left].position;
-            var rightSidePos = ControllerInstance.CharacterTransforms[Side.Right].position;
+            TransferOne(goingTo);
 
-            var startPos = goingTo == Side.Right ? leftSidePos : rightSidePos;
-            var endPos = goingTo == Side.Right ? rightSidePos : leftSidePos;
+            var delayScale = PointOfChar.x + PointOfChar.y;
+            if (delayScale > scaleMax) delayScale = scaleMax; 
+            else if (delayScale < scaleMin) delayScale = scaleMin;
             
+            var delay = Utilities.ConvertFloatToIntervalReversed(delayScale, scaleMin, scaleMax, delayMin,
+                delayMax);
+            
+            yield return new WaitForSeconds(delay);
+
+        }
+    }
+    
+    public void TransferOne(Side goingTo)
+    {
+        var leaveSide = SideOfChar;
+
+        if (CanCharShrinkMore)
+        {
+            Vector3 startTransformPosition;
+            Vector3 endTransformPosition;
+            
+            if (sideOfChar != Side.Middle)
+            {
+                startTransformPosition = ControllerInstance.CharacterTransforms[sideOfChar].position;
+                endTransformPosition = ControllerInstance.CharacterTransforms[goingTo].position;
+            }
+            else
+            {
+                startTransformPosition = handPosition.position;
+                endTransformPosition = BossPos.position;
+            }
             
             var sizeX = 0;
             var sizeY = 0;
@@ -156,13 +213,12 @@ public class CharController : MonoBehaviour
                 sizeY = 1;
             }
             
+            
             var resultSize = new Vector2(sizeX, sizeY);
             
             IntermediateStartedToMove(resultSize, leaveSide);
 
-            IOCInstance.MoveIntermediateObject(startPos, endPos, Config.DurationOfAnimation, goingTo, resultSize);
-            yield return new WaitForSeconds(delay);
-
+            IOCInstance.MoveIntermediateObject(startTransformPosition, endTransformPosition, Config.DurationOfAnimation, goingTo, resultSize);
         }
     }
 
@@ -230,11 +286,11 @@ public class CharController : MonoBehaviour
         
         _transformsOfParts.ForEach(pair =>
         {
-           var animScale = pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value,minWidth + ((width - 1) * widthScalingCoef)), duration);
+           var animScale = pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value,MinWidth + ((width - 1) * WidthScalingCoefficient)), duration);
            anims.Add(animScale);
         });
 
-       var anim =  upperBodyMovePoint.DOMove(upperBodyPoint.position + upperBodyMoveVector *  (minHeight + heightScalingCoef * (height-1)), duration);
+       var anim =  upperBodyMovePoint.DOMove(upperBodyPoint.position - _diffVectorForMoveBodyPartAndLowerBody + upperBodyMoveVector *  (MinHeight + HeightScalingCoefficient * (height-1)), duration);
        anims.Add(anim);
 
        return anims;
@@ -246,26 +302,30 @@ public class CharController : MonoBehaviour
         
         _transformsOfParts.ForEach(pair =>
         {
-            var animScale = pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value,minWidth + ((sizeVector.x - 1) * widthScalingCoef)), duration);
+            var animScale = pair.Key.DOScale(Utilities.ScaleModeToVector(pair.Value,MinWidth + ((sizeVector.x - 1) * WidthScalingCoefficient)), duration);
             anims.Add(animScale);
         });
         
         
-        var anim =  upperBodyMovePoint.DOMove(lowerBodyPoint.position + upperBodyMoveVector *  (minHeight + heightScalingCoef * (sizeVector.y - 1)), duration);
+        var anim =  upperBodyMovePoint.DOMove(lowerBodyPoint.position - _diffVectorForMoveBodyPartAndLowerBody + upperBodyMoveVector *  (MinHeight + HeightScalingCoefficient * (sizeVector.y - 1)), duration);
         anims.Add(anim);
+        
         
         return anims;
     }
+    
 
     private void SetCharToGhostMode()
     {
         _meshRenderersOfParts.ForEach(meshRenderer => meshRenderer.enabled = false);
+        CanCharShrinkMore = false;
         IsCharacterGhostMode = true;
     }
 
     private void SetCharToVisibleMode()
     {
         _meshRenderersOfParts.ForEach(meshRenderer => meshRenderer.enabled = true);
+        CanCharShrinkMore = false;
         IsCharacterGhostMode = false;
     }
     

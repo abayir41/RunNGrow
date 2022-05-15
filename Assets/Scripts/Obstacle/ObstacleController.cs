@@ -18,8 +18,9 @@ public class ObstacleController : MonoBehaviour
     [SerializeField] private Transform leftFirstObstacle;
     [SerializeField] private Transform obstacleParent;
 
-    private List<GameObject> Obstacles => _leftObstacles.Concat(_rightObstacles).ToList();
-    private List<NormalObstacleObject> ObstacleObjects => _leftObstacleObjects.Concat(_rightObstacleObjects).ToList();
+    public List<GameObject> obstacles;
+    public List<Transform> obstaclesTransforms;
+    private List<NormalObstacleObject> _obstacleObjects;
     
     private List<GameObject> _leftObstacles;
     private List<NormalObstacleObject> _leftObstacleObjects;
@@ -28,7 +29,7 @@ public class ObstacleController : MonoBehaviour
     private List<NormalObstacleObject> _rightObstacleObjects;
     
     
-    [ShowInInspector]
+    public Transform LastObstacleTransform { get; private set; }
     public Vector3 LastObstaclePos { get; private set; }
 
 
@@ -43,6 +44,17 @@ public class ObstacleController : MonoBehaviour
         _rightObstacleObjects = new List<NormalObstacleObject>();
     }
 
+    private void Update()
+    {
+        var along = Controller.MapAlongAxis switch
+        {
+            Axis.X => Vector3.right,
+            Axis.Z => Vector3.forward,
+            _ => Vector3.zero
+        };
+        
+        obstaclesTransforms.ForEach(trans => trans.position -= along * (Config.SpeedOfObstacles * Time.deltaTime));
+    }
 
     public void SpawnMapObstacles(MapConfig config)
     {
@@ -92,9 +104,15 @@ public class ObstacleController : MonoBehaviour
             obsScript.SetProperties(rightSideObstacle);
             
             _rightObstacleObjects.Add(obsScript);
-            
+
+            LastObstacleTransform = obs.transform;
+
         }
 
         LastObstaclePos = Vector3.Max(lastLeftObstaclePos, lastRightObstaclePos);
+        
+        obstacles = _leftObstacles.Concat(_rightObstacles).ToList();
+        obstaclesTransforms = obstacles.Select(o => o.GetComponent<Transform>()).ToList();
+        _obstacleObjects = _leftObstacleObjects.Concat(_rightObstacleObjects).ToList();
     }
 }

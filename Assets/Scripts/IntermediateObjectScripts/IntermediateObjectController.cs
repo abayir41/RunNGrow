@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 
 public class IntermediateObjectController : MonoBehaviour
 {
@@ -16,38 +14,7 @@ public class IntermediateObjectController : MonoBehaviour
     private List<GameObject> _objectsInPool;
     private List<TweenObjectAnims> _intermediateObjectsMoveAnims;
     private List<GameObject> _activeObjects;
-
-    private readonly struct TweenObjectAnims
-    {
-        public TweenObjectAnims(TweenerCore<Vector3, Vector3, VectorOptions> animX,
-            TweenerCore<Vector3, Vector3, VectorOptions> animYp1,
-            TweenerCore<Vector3, Vector3, VectorOptions> animYp2,
-            TweenerCore<Vector3, Vector3, VectorOptions> animZ)
-        {
-            AnimX = animX;
-            AnimYp1 = animYp1;
-            AnimYp2 = animYp2;
-            AnimZ = animZ;
-        }
-
-        private TweenerCore<Vector3, Vector3, VectorOptions> AnimX { get; }
-        private TweenerCore<Vector3, Vector3, VectorOptions> AnimYp1 { get; }
-        private TweenerCore<Vector3, Vector3, VectorOptions> AnimYp2 { get; }
-        private TweenerCore<Vector3, Vector3, VectorOptions> AnimZ { get; }
-
-        public void SetOnComplete(Action action)
-        {
-            AnimX.OnComplete(() => action?.Invoke());
-        }
-
-        public void KillAllAnims()
-        {
-            AnimX.Kill();
-            AnimYp1.Kill();
-            AnimYp2.Kill();
-            AnimZ.Kill();
-        }
-    }
+    
 
     private void Awake()
     {
@@ -62,13 +29,21 @@ public class IntermediateObjectController : MonoBehaviour
     private void OnEnable()
     {
         IntermediateObjectActions.IntermediateObjectArrivedSuccessfully += IntermediateObjectArrivedSuccessfully;
+        GameActions.GameFinishAnimationStarted += GameFinishAnimationStarted;
     }
+
     
+
     private void OnDisable()
     {
         IntermediateObjectActions.IntermediateObjectArrivedSuccessfully -= IntermediateObjectArrivedSuccessfully;
+        GameActions.GameFinishAnimationStarted -= GameFinishAnimationStarted;
     }
     
+    private void GameFinishAnimationStarted()
+    {
+        KillTheAnimations();
+    }
 
     private void IntermediateObjectArrivedSuccessfully(Vector2 size, GameObject obj, Side side)
     {

@@ -86,4 +86,33 @@ public class Utilities : MonoBehaviour
             
         }
     }
+
+    public static Vector3 AxisConverter(Axis axis)
+    {
+        return axis switch
+        {
+            Axis.X => Vector3.right,
+            Axis.Y => Vector3.up,
+            Axis.Z => Vector3.forward,
+            _ => Vector3.zero
+        };
+    }
+
+    public static float ConvertFloatToInterval(float value, float normalMin, float normalMax, float intervalMin,
+        float intervalMax)
+    {
+        var scaleRate =  (intervalMax - intervalMin) / (normalMax - normalMin);
+        var diffNormal = value - normalMin;
+        var valueFromInterval = intervalMin + (diffNormal * scaleRate);
+        return valueFromInterval;
+    }
+    
+    public static float ConvertFloatToIntervalReversed(float value, float normalMin, float normalMax, float intervalMin,
+        float intervalMax)
+    {
+        var scaleRate =  (intervalMax - intervalMin) / (normalMax - normalMin);
+        var diffNormal = value - normalMin;
+        var valueFromInterval = intervalMax - (diffNormal * scaleRate);
+        return valueFromInterval;
+    }
 }

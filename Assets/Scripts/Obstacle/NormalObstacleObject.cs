@@ -20,7 +20,7 @@ public class NormalObstacleObject : MonoBehaviour
     private float force;
     private void Awake()
     {
-        force = 5f;
+
     }
 
     public void SetProperties(ObstacleStruct prop)
