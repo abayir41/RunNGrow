@@ -23,10 +23,12 @@ public class GameConfig : ScriptableObject
     //------------------------
     public Vector2 StartPoint => startPoint;
     public float SpeedOfObstacles => speedOfObstacles;
+    public float CameraAnimDuration => cameraAnimDuration;
 
     [Header("Game Dynamic Configuration")] 
     [SerializeField] private Vector2 startPoint;
     [SerializeField] private float speedOfObstacles;
+    [SerializeField] private float cameraAnimDuration;
 
     //------------------------
     //Obstacles Configurations
@@ -85,5 +87,17 @@ public class GameConfig : ScriptableObject
     [Header("Final Configurations")]
     [SerializeField] private float distanceBetweenFinalAndLastObstacle;
     [SerializeField] private float speedOfFinalPart;
+    
+    //-------------------------------
+    //UI Configurations
+    //-------------------------------
 
+    public float UIMoveAnimationDuration => uiMoveAnimationDuration;
+    public float UIFadeLoopAnimationDuration => uiFadeLoopAnimationDuration;
+    public float UIFadeOutAnimationDuration => uiFadeOutAnimationDuration;
+    
+    [Header("UI Configurations")] 
+    [SerializeField] private float uiMoveAnimationDuration;
+    [SerializeField] private float uiFadeOutAnimationDuration;
+    [SerializeField] private float uiFadeLoopAnimationDuration;
 }

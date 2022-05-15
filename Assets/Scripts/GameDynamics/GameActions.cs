@@ -11,9 +11,12 @@ public class GameActions : MonoBehaviour
 
     public static Action BossRunningStarted;
 
+    public static Action BossHitTheMax;
+
     public static Action GameEndedWithWinning;
     
     public static Action GameFailed;
 
-    
+    public static Action GameStarted;
+
 }

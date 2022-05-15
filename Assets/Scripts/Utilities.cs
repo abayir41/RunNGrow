@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Utilities : MonoBehaviour
+public static class Utilities
 {
     // Start is called before the first frame update
     public static Side GetOtherSide(Side side)

@@ -8,7 +8,6 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
-using UnityEditor;
 using UnityEngine;
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
@@ -52,6 +51,9 @@ public class CharController : MonoBehaviour
     private Vector3 _diffVectorForMoveBodyPartAndLowerBody;
     private const float ThresholdOfBodyFixing = 0.01f;
 
+    private List<Animator> _animators;
+    private static readonly int Started = Animator.StringToHash("GameStarted");
+
     [Button]
     private void CalculateUpperBodyMoveVector()
     {
@@ -82,6 +84,8 @@ public class CharController : MonoBehaviour
         _transformsOfParts = _partOfChars.Select(o => new KeyValuePair<Transform, ScaleMode>(o.GetComponent<Transform>(), o.GetComponent<CharPart>().Mode)).ToDictionary(pair => pair.Key,pair => pair.Value);
 
         _diffVectorForMoveBodyPartAndLowerBody = lowerBodyPoint.position - upperBodyMovePoint.position;
+
+        _animators = GetComponentsInChildren<Animator>().ToList();
     }
 
     private void Start()
@@ -102,6 +106,8 @@ public class CharController : MonoBehaviour
 
     private void OnEnable()
     {
+        GameActions.GameStarted += GameStarted;
+        
         if(SideOfChar == Side.Boss) return;
         IntermediateObjectActions.IntermediateObjectArrivedSuccessfully += IntermediateObjectArrivedSuccessfully;
         
@@ -111,10 +117,18 @@ public class CharController : MonoBehaviour
     
     private void OnDisable()
     {
+        GameActions.GameStarted -= GameStarted;
+        
         if(SideOfChar == Side.Boss) return;
         IntermediateObjectActions.IntermediateObjectArrivedSuccessfully -= IntermediateObjectArrivedSuccessfully;
         
         GameActions.NormalObstacleColl -= NormalObstacleColl;
+    }
+
+    private void GameStarted()
+    {
+        if(sideOfChar == Side.Left || sideOfChar == Side.Right)
+            _animators.ForEach(animator => animator.SetBool(Started, true));
     }
 
     #region Intermediate Moves
@@ -123,6 +137,7 @@ public class CharController : MonoBehaviour
     {
         if(side != SideOfChar) return;
 
+        var totalPoint = PointOfChar.x + PointOfChar.y;
         if (PointOfChar == Vector2.zero)
             SetCharToVisibleMode();
         
@@ -141,14 +156,18 @@ public class CharController : MonoBehaviour
         
         PointOfChar -= size;
 
-        
-        GetAnimCharToAPoint(PointOfChar,Config.ScalingAnimationDuration);
+        var x = PointOfChar.x;
+        var y = PointOfChar.y;
 
-        
-        if (PointOfChar == Vector2.zero)
+        if (x <= 0 || y <= 0)
         {
+            GetAnimCharToAPoint(0,0,Config.ScalingAnimationDuration);
             CanCharShrinkMore = false;
             SetCharToGhostMode();
+        }
+        else
+        {
+            GetAnimCharToAPoint(PointOfChar, Config.ScalingAnimationDuration);
         }
     }
     
@@ -156,7 +175,6 @@ public class CharController : MonoBehaviour
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public IEnumerator StartTransfer(Side goingTo)
     {
-        var leaveSide = SideOfChar;
 
         var delayMin = Config.DelayMin;
         var delayMax = Config.DelayMax;
@@ -179,6 +197,7 @@ public class CharController : MonoBehaviour
         }
     }
     
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public void TransferOne(Side goingTo)
     {
         var leaveSide = SideOfChar;
@@ -202,10 +221,10 @@ public class CharController : MonoBehaviour
             var sizeX = 0;
             var sizeY = 0;
 
-            if (PointOfChar.x != 1.0f)
+            if (PointOfChar.x > 1.0f)
                 sizeX = 1;
             
-            if (PointOfChar.y != 1.0f)
+            if (PointOfChar.y > 1.0f)
                 sizeY = 1;
             
             if (PointOfChar.x == 1 && PointOfChar.y == 1)
@@ -315,7 +334,6 @@ public class CharController : MonoBehaviour
         return anims;
     }
     
-
     private void SetCharToGhostMode()
     {
         _meshRenderersOfParts.ForEach(meshRenderer => meshRenderer.enabled = false);

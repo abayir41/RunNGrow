@@ -84,3 +84,22 @@ public readonly struct TweenObjectAnims
         AnimZ.Kill();
     }
 }
+
+public interface ISkin
+{
+    string SkinName { get; }
+    bool IsSkinUnlocked();
+    void EnableSkin();
+    void DisableSkin();
+}
+
+[Flags]
+public enum UIAnimationTypes 
+{
+    MoveLeft = 1,
+    MoveRight = 2,
+    MoveUp = 4,
+    MoveDown = 8,
+    FadeOut = 16,
+    FadeLoop = 32
+}
