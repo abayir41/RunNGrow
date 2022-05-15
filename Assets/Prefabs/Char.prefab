@@ -2547,6 +2547,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sideOfChar: 0
+  handPosition: {fileID: 0}
   lowerBodyPoint: {fileID: 7208982567473077192}
   upperBodyPoint: {fileID: 6499763403226237793}
   cylinderLowerPoint: {fileID: 8435168906774551159}
@@ -2577,10 +2578,10 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 10
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!1 &7680006441652668544
 GameObject:

@@ -47,6 +47,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private Transform leftSide;
     [SerializeField] private Transform rightSide;
     [SerializeField] private Transform middleSide;
+    [SerializeField] private Transform finalPlatform;
 
     public Vector3 LeftSideVec { get; private set; }
     public Vector3 RightSideVec { get; private set; }
@@ -57,6 +58,14 @@ public class GameController : MonoBehaviour
     private bool _gameFinishAnimationStarted;
     private bool _gameFailed;
     
+    //Animations
+    private static readonly int RunBack = Animator.StringToHash("RunBack");
+    private static readonly int SpeedOfThrow = Animator.StringToHash("SpeedOfThrow");
+    private static readonly int Die = Animator.StringToHash("Die");
+
+
+    [SerializeField] private List<GameObject> multiplierBlocks;
+    private float speedOfFinalPart;
 
     private void Awake()
     {
@@ -69,6 +78,8 @@ public class GameController : MonoBehaviour
 
         BossTransform = Boss.GetComponent<Transform>();
 
+        speedOfFinalPart = Config.SpeedOfFinalPart;
+
         CharactersDict = characters
             .Select(o => new KeyValuePair<Side, GameObject>(o.GetComponent<CharController>().SideOfChar, o))
             .ToDictionary(pair => pair.Key, pair => pair.Value);
@@ -78,6 +89,18 @@ public class GameController : MonoBehaviour
         CharacterTransforms = CharactersDict
             .Select(pair => new KeyValuePair<Side, Transform>(pair.Key, pair.Value.GetComponent<Transform>()))
             .ToDictionary(pair => pair.Key,pair => pair.Value);
+
+        var step = 0.0f;
+        var matBlock = new MaterialPropertyBlock();
+        foreach (var multiplierBlock in multiplierBlocks)
+        {
+            var color = Color.HSVToRGB(step, 1, 1);
+            matBlock.SetColor("_Color", color);
+            
+            multiplierBlock.GetComponent<Renderer>().SetPropertyBlock(matBlock);
+            
+            step += 1.0f / multiplierBlocks.Count;
+        }
     }
     
 
@@ -91,11 +114,33 @@ public class GameController : MonoBehaviour
 
         CharactersDict[Side.Middle].GetComponentsInChildren<Animator>().ForEach(animator => animator.speed = 0);
         OController.SpawnMapObstacles(maps[0]);
+
+        switch (MapAlongAxis)
+        {
+            case Axis.X:
+                finalPlatform.position = new Vector3(OController.LastObstaclePos.x + Config.DistanceBetweenFinalAndLastObstacle, MiddleSideVec.y, MiddleSideVec.z);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        
         DOTween.SetTweensCapacity(1000,50);
     }
 
     void Update()
     {
+        
+        var along = MapAlongAxis switch
+        {
+            Axis.X => Vector3.right,
+            Axis.Z => Vector3.forward,
+            _ => Vector3.zero
+        };
+
+        finalPlatform.position -= along * (speedOfFinalPart * Time.deltaTime);
+        
+        
+        
         if (LeftAndRightCanShrink.All(pair => pair.Value == true) && !_gameFinishAnimationStarted && !IsAnyIntermediateObjAlive)
         {
             GameActions.GameFailed?.Invoke();
@@ -108,12 +153,13 @@ public class GameController : MonoBehaviour
             case Axis.X:
                 if(_gameFinishAnimationStarted || _gameFailed) break;
                 
-                if (lastObjPos.x + 1.0f < CharacterTransforms[Side.Left].position.x)
+                if (lastObjPos.x < CharacterTransforms[Side.Left].position.x)
                 {
                     _gameFinishAnimationStarted = true;
                     if(_currentIntermediateObjectSpawner != null)
                         StopCoroutine(_currentIntermediateObjectSpawner);
 
+                    speedOfFinalPart = 0;
                     StartCoroutine(StartEndAnimation());
                     GameActions.GameFinishAnimationStarted?.Invoke();
                 }
@@ -142,6 +188,13 @@ public class GameController : MonoBehaviour
 
     private IEnumerator StartEndAnimation()
     {
+        while (IsAnyIntermediateObjAlive)
+        {
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(Config.DurationOfAnimation + 0.1f);
+        
         StartCoroutine(CharacterControllers[Side.Left].StartTransfer(Side.Middle));
         StartCoroutine(CharacterControllers[Side.Right].StartTransfer(Side.Middle));
 
@@ -151,12 +204,35 @@ public class GameController : MonoBehaviour
         }
         
         CharactersDict[Side.Middle].GetComponentsInChildren<Animator>().ForEach(animator => animator.speed = 1);
+        CharactersDict[Side.Boss].GetComponentsInChildren<Animator>()
+            .ForEach(animator => animator.SetBool(RunBack, true));
+
+        speedOfFinalPart = Config.SpeedOfFinalPart;
+        CharacterTransforms[Side.Boss].parent = null;
         GameActions.BossRunningStarted?.Invoke();
 
         while (!CharacterControllers[Side.Middle].IsCharacterGhostMode || IsAnyIntermediateObjAlive)
         {
+            var scale = CharacterControllers[Side.Middle].PointOfChar.x +
+                        CharacterControllers[Side.Middle].PointOfChar.y;
+            
+            if (scale < Config.MinScaleForThrow)
+                scale = Config.MinScaleForThrow;
+            else if (scale > Config.MaxScaleForThrow)
+                scale = Config.MaxScaleForThrow;
+
+            var speed = Utilities.ConvertFloatToInterval(scale, Config.MinScaleForThrow,
+                Config.MaxScaleForThrow, Config.MinThrowSpeed, Config.MaxThrowSpeed);
+            
+            CharactersDict[Side.Middle].GetComponentsInChildren<Animator>().ForEach(animator => animator.SetFloat(SpeedOfThrow, speed));
             yield return null;
         }
+        CharactersDict[Side.Boss].GetComponentsInChildren<Animator>()
+            .ForEach(animator => animator.SetBool(Die, true));
+
+        speedOfFinalPart = 0;
+        //duration of Die
+        yield return new WaitForSeconds(2.3f);
         
         GameActions.GameEndedWithWinning?.Invoke();
     }

@@ -92,9 +92,8 @@ public class CharController : MonoBehaviour
         }
         else
         {
-            PointOfChar = GameController.Config.StartPoint;
-            //PointOfChar = Vector2.zero;
-            //SetCharToGhostMode();
+            PointOfChar = Vector2.zero;
+            SetCharToGhostMode();
         }
         
         var anims = GetAnimCharToAPoint(PointOfChar, 0.5f);
@@ -103,6 +102,7 @@ public class CharController : MonoBehaviour
 
     private void OnEnable()
     {
+        if(SideOfChar == Side.Boss) return;
         IntermediateObjectActions.IntermediateObjectArrivedSuccessfully += IntermediateObjectArrivedSuccessfully;
         
         GameActions.NormalObstacleColl += NormalObstacleColl;
@@ -111,6 +111,7 @@ public class CharController : MonoBehaviour
     
     private void OnDisable()
     {
+        if(SideOfChar == Side.Boss) return;
         IntermediateObjectActions.IntermediateObjectArrivedSuccessfully -= IntermediateObjectArrivedSuccessfully;
         
         GameActions.NormalObstacleColl -= NormalObstacleColl;
@@ -130,7 +131,7 @@ public class CharController : MonoBehaviour
         CanCharShrinkMore = true;
         
         
-        GetAnimCharToAPoint(PointOfChar,0.5f);
+        GetAnimCharToAPoint(PointOfChar,Config.ScalingAnimationDuration);
 
     }
     
@@ -141,7 +142,7 @@ public class CharController : MonoBehaviour
         PointOfChar -= size;
 
         
-        GetAnimCharToAPoint(PointOfChar,0.5f);
+        GetAnimCharToAPoint(PointOfChar,Config.ScalingAnimationDuration);
 
         
         if (PointOfChar == Vector2.zero)

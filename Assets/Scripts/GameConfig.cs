@@ -50,6 +50,7 @@ public class GameConfig : ScriptableObject
     public float MinHeight => minHeight;
     public float MinScaleForDelay => minScaleForDelay;
     public float MaxScaleForDelay => maxScaleForDelay;
+    public float ScalingAnimationDuration => scalingAnimationDuration;
      
     [Header("Character Configurations")]
     [SerializeField] private float widthScalingCoefficient;
@@ -58,4 +59,31 @@ public class GameConfig : ScriptableObject
     [SerializeField] private float minHeight;
     [SerializeField] private float minScaleForDelay;
     [SerializeField] private float maxScaleForDelay;
+    [SerializeField] private float scalingAnimationDuration;
+    
+    
+    //-------------------------------
+    //Middle Character Configurations
+    //-------------------------------
+    public float MinThrowSpeed => minThrowSpeed;
+    public float MaxThrowSpeed => maxThrowSpeed;
+    public float MinScaleForThrow => minScaleForThrow;
+    public float MaxScaleForThrow => maxScaleForThrow;
+    
+    [Header("MiddleChar Configurations")] 
+    [SerializeField] private float minThrowSpeed;
+    [SerializeField] private float maxThrowSpeed;
+    [SerializeField] private float minScaleForThrow;
+    [SerializeField] private float maxScaleForThrow;
+    
+    //-------------------------------
+    //Final Part Configurations
+    //-------------------------------
+    public float DistanceBetweenFinalAndLastObstacle => distanceBetweenFinalAndLastObstacle;
+    public float SpeedOfFinalPart => speedOfFinalPart;
+    
+    [Header("Final Configurations")]
+    [SerializeField] private float distanceBetweenFinalAndLastObstacle;
+    [SerializeField] private float speedOfFinalPart;
+
 }

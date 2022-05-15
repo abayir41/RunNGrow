@@ -27,3 +27,10 @@ MonoBehaviour:
   minHeight: 0
   minScaleForDelay: 1
   maxScaleForDelay: 20
+  scalingAnimationDuration: 0.5
+  minThrowSpeed: 7
+  maxThrowSpeed: 10
+  minScaleForThrow: 2
+  maxScaleForThrow: 10
+  distanceBetweenFinalAndLastObstacle: 3
+  speedOfFinalPart: 5
