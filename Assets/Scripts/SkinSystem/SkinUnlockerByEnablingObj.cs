@@ -5,37 +5,17 @@ using UnityEngine;
 
 public class SkinUnlockerByEnablingObj : MonoBehaviour, ISkin
 {
-    public string SkinName => skinName;
-    [SerializeField] private string skinName;
-
-    [SerializeField] private GameObject skin;
     
-    private void Awake()
-    {
-        if (SkinSystem.IsSkinEnabled(skinName))
-        {
-            EnableSkin();
-        }
-        else
-        {
-            DisableSkin();
-        }
-    }
+    [SerializeField] private List<GameObject> skin;
 
     public void EnableSkin()
     {
-        PlayerPrefs.SetInt(skinName,1);
-        skin.SetActive(true);
+        skin.ForEach(obj => obj.SetActive(true));
     }
 
     public void DisableSkin()
     {
-        PlayerPrefs.SetInt(skinName,0);
-        skin.SetActive(false);
+        skin.ForEach(obj => obj.SetActive(false));
     }
     
-    public bool IsSkinUnlocked()
-    {
-        return ScoreSystem.TotalPoints > SkinSystem.Instance.Skins[skinName];
-    }
 }

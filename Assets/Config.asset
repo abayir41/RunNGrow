@@ -14,16 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   amplitude: 3
   durationOfAnimation: 1
-  delayMin: 0.05
-  delayMax: 0.2
+  delayMin: 0.03
+  delayMax: 0.07
   startPoint: {x: 1, y: 1}
-  speedOfObstacles: 5
+  speedOfObstacles: 10
   cameraAnimDuration: 0.3
   distanceBetweenObstacle: 30
   redColor: {fileID: 2100000, guid: d2b9c4cf6f39fbc40bb21ccaaed540e0, type: 2}
-  greenColor: {fileID: 2100000, guid: ecfe70d2776569c48a67466b7cca5642, type: 2}
-  widthScalingCoefficient: 1
-  heightScalingCoefficient: 1
+  blueColor: {fileID: 2100000, guid: ecfe70d2776569c48a67466b7cca5642, type: 2}
+  widthScalingCoefficient: 0.1
+  heightScalingCoefficient: 0.3
   minWidth: 1
   minHeight: 0
   minScaleForDelay: 1
@@ -34,7 +34,10 @@ MonoBehaviour:
   minScaleForThrow: 2
   maxScaleForThrow: 10
   distanceBetweenFinalAndLastObstacle: 3
-  speedOfFinalPart: 5
+  speedOfFinalPart: 10
   uiMoveAnimationDuration: 3
   uiFadeOutAnimationDuration: 1
   uiFadeLoopAnimationDuration: 1.6
+  uiTimeBetweenPerScoreAdding: 0.1
+  uiMinimizeTime: 0.4
+  durationOfSkinUnlockAnimation: 5

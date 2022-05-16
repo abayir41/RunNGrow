@@ -8,8 +8,8 @@ public class ScoreSystem : MonoBehaviour
     public static ScoreSystem Instance { get; private set; }
     public static int TotalPoints
     {
-        get => PlayerPrefs.GetInt("Money");
-        private set => PlayerPrefs.SetInt("Money", value);
+        get => PlayerPrefs.GetInt("Score");
+        private set => PlayerPrefs.SetInt("Score", value);
     }
 
 

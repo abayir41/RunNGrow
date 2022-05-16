@@ -87,8 +87,6 @@ public readonly struct TweenObjectAnims
 
 public interface ISkin
 {
-    string SkinName { get; }
-    bool IsSkinUnlocked();
     void EnableSkin();
     void DisableSkin();
 }

@@ -13,24 +13,36 @@ MonoBehaviour:
   m_Name: Map1
   m_EditorClassIdentifier: 
   leftSideObstacles:
-  - obstacleType: 0
-    obstaclePoint: 8
-  - obstacleType: 1
+  - obstacleType: 4
     obstaclePoint: 4
+  - obstacleType: 4
+    obstaclePoint: 2
+  - obstacleType: 0
+    obstaclePoint: 4
+  - obstacleType: 0
+    obstaclePoint: 5
+  - obstacleType: 8
+    obstaclePoint: 2
+  - obstacleType: 4
+    obstaclePoint: 4
+  - obstacleType: 5
+    obstaclePoint: 4
+  - obstacleType: 0
+    obstaclePoint: 4
+  rightSideObstacles:
+  - obstacleType: 1
+    obstaclePoint: 3
+  - obstacleType: 1
+    obstaclePoint: 2
+  - obstacleType: 0
+    obstaclePoint: 5
+  - obstacleType: 9
+    obstaclePoint: 2
   - obstacleType: 2
     obstaclePoint: 2
-  - obstacleType: 10
-    obstaclePoint: 0
-  - obstacleType: 8
-    obstaclePoint: 0
-  rightSideObstacles:
-  - obstacleType: 0
-    obstaclePoint: 3
-  - obstacleType: 0
-    obstaclePoint: 4
-  - obstacleType: 4
-    obstaclePoint: 8
-  - obstacleType: 0
-    obstaclePoint: 1
-  - obstacleType: 4
+  - obstacleType: 6
     obstaclePoint: 2
+  - obstacleType: 1
+    obstaclePoint: 2
+  - obstacleType: 1
+    obstaclePoint: 3

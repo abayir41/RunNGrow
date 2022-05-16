@@ -24,6 +24,8 @@ public class GameController : MonoBehaviour
     private IntermediateObjectController IOCInstance => IntermediateObjectController.Instance;
     private ObstacleController OController => ObstacleController.Instance;
 
+    private UIController UIControl => UIController.Instance;
+
     #endregion
     
     #region Character
@@ -79,6 +81,12 @@ public class GameController : MonoBehaviour
     private float _gameTotalPoints;
     private bool _bossHitTheWall;
     private bool _gameStarted;
+
+    [Button]
+    public void RemovePlayerCache()
+    {
+        PlayerPrefs.DeleteAll();
+    }
 
     private void Awake()
     {
@@ -150,6 +158,8 @@ public class GameController : MonoBehaviour
         }
         
         DOTween.SetTweensCapacity(1000,50);
+        
+        UIControl.SetCoinText(MoneySystem.TotalPoints);
     }
 
     private void OnEnable()
@@ -237,7 +247,8 @@ public class GameController : MonoBehaviour
             }
             else if (touch.phase == TouchPhase.Ended)
             {
-                StopCoroutine(_currentIntermediateObjectSpawner);
+                if(_currentIntermediateObjectSpawner != null)
+                    StopCoroutine(_currentIntermediateObjectSpawner);
             }
         }
         
@@ -324,11 +335,67 @@ public class GameController : MonoBehaviour
         var multiplierBlock = multiplierBlocks.OrderBy(o => Vector3.Distance(bossTrans, o.transform.position)).First();
         var multiplier = multiplyAmount[multiplierBlocks.IndexOf(multiplierBlock)];
         
-        var oldPoint = ScoreSystem.TotalPoints;
         var addPoint = (int) (_gameTotalPoints * multiplier);
-        ScoreSystem.Instance.AddPoint(addPoint);
-        var newPoint = ScoreSystem.TotalPoints;
         
+        
+        UIControl.OpenGameScorePart();
+        
+        float tempCoinText = MoneySystem.TotalPoints;
+        float tempGameScoreText = 0;
+
+        var anim = DOTween.To(() => tempCoinText, value =>
+        {
+            tempCoinText = value;
+            UIControl.SetCoinText((int)tempCoinText);
+        }, MoneySystem.TotalPoints + addPoint, addPoint * Config.UITimeBetweenPerScoreAdding);
+        DOTween.To(() => tempGameScoreText, value =>
+        {
+            tempGameScoreText = value;
+            UIControl.SetGameScoreText((int) tempGameScoreText);
+        }, addPoint, addPoint * Config.UITimeBetweenPerScoreAdding);
+
+        while (anim.IsPlaying())
+        {
+            yield return null;
+        }
+
+        if (SkinSystem.Instance.IsThereAnyNewSkin())
+        {
+            int skinMinPoint;
+            var skinIndex = SkinSystem.Instance.CurrentSkinIndex();
+            var skinValue = SkinSystem.Instance.PriceOfSkins[skinIndex];
+            if (skinIndex == 0)
+            {
+                skinMinPoint = 0;
+            }
+            else
+            {
+                skinMinPoint = SkinSystem.Instance.PriceOfSkins[skinIndex - 1];
+            }
+
+            var current = Utilities.ConvertFloatToInterval(ScoreSystem.TotalPoints, skinMinPoint, skinValue, 0, 1);
+            var target =
+                Utilities.ConvertFloatToInterval(ScoreSystem.TotalPoints + addPoint, skinMinPoint, skinValue, 0, 1);
+
+            if (target >= 1)
+            {
+                StartCoroutine(UIControl.GetSkinUnlockScreen(current, 1, true));
+            }
+            else
+            {
+                StartCoroutine(UIControl.GetSkinUnlockScreen(current, target, false));
+            }
+
+        }
+        else
+        {
+            UIControl.OpenEndTouchToContinue();
+        }
+        
+        ScoreSystem.Instance.AddPoint(addPoint);
+        MoneySystem.Instance.AddPoint(addPoint);
+        
+
         GameActions.GameEndedWithWinning?.Invoke();
     }
 

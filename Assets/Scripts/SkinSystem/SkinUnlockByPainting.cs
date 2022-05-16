@@ -7,29 +7,22 @@ public class SkinUnlockByPainting : MonoBehaviour, ISkin
 {
     private static readonly Color DefaultColor = Color.white;
     
-    public string SkinName => skinName;
-    [SerializeField] private string skinName;
-    [SerializeField] private GameObject parentGameObjectOfMeshRenderers;
+    [SerializeField] private List<GameObject> parentGameObjectOfMeshRenderers;
     [SerializeField] private Color skinColor;
     private List<MeshRenderer> _meshRenderers;
     
     private void Awake()
     {
-        _meshRenderers = parentGameObjectOfMeshRenderers.GetComponentsInChildren<MeshRenderer>().ToList();
+        _meshRenderers = new List<MeshRenderer>();
         
-        if (SkinSystem.IsSkinEnabled(skinName))
+        parentGameObjectOfMeshRenderers.ForEach(obj =>
         {
-            EnableSkin();
-        }
-        else
-        {
-            DisableSkin();
-        }
+            _meshRenderers.AddRange(obj.GetComponentsInChildren<MeshRenderer>().ToList());
+        });
     }
 
     public void EnableSkin()
     {
-        PlayerPrefs.SetInt(skinName,1);
         var matBlock = new MaterialPropertyBlock();
         matBlock.SetColor("_Color", skinColor);
         _meshRenderers.ForEach(meshRenderer => meshRenderer.SetPropertyBlock(matBlock));
@@ -37,14 +30,9 @@ public class SkinUnlockByPainting : MonoBehaviour, ISkin
 
     public void DisableSkin()
     {
-        PlayerPrefs.SetInt(skinName,0);
         var matBlock = new MaterialPropertyBlock();
         matBlock.SetColor("_Color", DefaultColor);
         _meshRenderers.ForEach(meshRenderer => meshRenderer.SetPropertyBlock(matBlock));
     }
     
-    public bool IsSkinUnlocked()
-    {
-        return ScoreSystem.TotalPoints > SkinSystem.Instance.Skins[skinName];
-    }
 }
