@@ -80,7 +80,7 @@ public class GameController : MonoBehaviour
     private float _speedOfFinalPart;
     private float _gameTotalPoints;
     private bool _bossHitTheWall;
-    private bool _gameStarted;
+    public bool _gameStarted;
 
     [Button]
     public void RemovePlayerCache()
@@ -186,7 +186,6 @@ public class GameController : MonoBehaviour
     {
         _gameStarted = true;
     }
-
     void Update()
     {
         
@@ -359,7 +358,7 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
-        if (SkinSystem.Instance.IsThereAnyNewSkin())
+        /*if (SkinSystem.Instance.IsThereAnyNewSkin())
         {
             int skinMinPoint;
             var skinIndex = SkinSystem.Instance.CurrentSkinIndex();
@@ -388,9 +387,9 @@ public class GameController : MonoBehaviour
 
         }
         else
-        {
+        {*/
             UIControl.OpenEndTouchToContinue();
-        }
+        //}
         
         ScoreSystem.Instance.AddPoint(addPoint);
         MoneySystem.Instance.AddPoint(addPoint);

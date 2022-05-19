@@ -9,6 +9,8 @@ public class NormalObstacleObject : MonoBehaviour
 {
     private GameConfig Config => GameController.Config;
     public NormalObstacleType Type => _obstacleProperties.obstacleType;
+    public GameObject[] cylinders;
+    public GameObject[] quad;
 
     public int ObstaclePoint => _obstacleProperties.obstaclePoint;
 
@@ -42,6 +44,7 @@ public class NormalObstacleObject : MonoBehaviour
             case NormalObstacleType.AddHeight:
                 normalObstacle.SetActive(true);
                 middlePanel.material = Config.BlueColor;
+                cylinders[0].SetActive(true);
                 leftArrow.Rotate(new Vector3(0,0,-90));
                 rightArrow.Rotate(new Vector3(0,0,-90));
                 text.text = "+" + prop.obstaclePoint;
@@ -50,6 +53,7 @@ public class NormalObstacleObject : MonoBehaviour
             case NormalObstacleType.AddWeight:
                 normalObstacle.SetActive(true);
                 middlePanel.material = Config.BlueColor;
+                cylinders[0].SetActive(true);
                 leftArrow.Rotate(new Vector3(0,0,0));
                 rightArrow.Rotate(new Vector3(0,0,180));
                 text.text = "+" + prop.obstaclePoint;
@@ -58,6 +62,7 @@ public class NormalObstacleObject : MonoBehaviour
             case NormalObstacleType.DivideHeight:
                 normalObstacle.SetActive(true);
                 middlePanel.material = Config.RedColor;
+                cylinders[1].SetActive(true);
                 leftArrow.Rotate(new Vector3(0,0,90));
                 rightArrow.Rotate(new Vector3(0,0,90));
                 text.text = "÷" + prop.obstaclePoint;
@@ -66,6 +71,7 @@ public class NormalObstacleObject : MonoBehaviour
             case NormalObstacleType.DivideWeight:
                 normalObstacle.SetActive(true);
                 middlePanel.material = Config.RedColor;
+                cylinders[1].SetActive(true);
                 leftArrow.Rotate(new Vector3(0,0,180));
                 rightArrow.Rotate(new Vector3(0,0,0));
                 text.text = "÷" + prop.obstaclePoint;
@@ -74,6 +80,7 @@ public class NormalObstacleObject : MonoBehaviour
             case NormalObstacleType.ExtractHeight:
                 normalObstacle.SetActive(true);
                 middlePanel.material = Config.RedColor;
+                cylinders[1].SetActive(true);
                 leftArrow.Rotate(new Vector3(0,0,90));
                 rightArrow.Rotate(new Vector3(0,0,90));
                 text.text = "-" + prop.obstaclePoint;
@@ -82,6 +89,7 @@ public class NormalObstacleObject : MonoBehaviour
             case NormalObstacleType.ExtractWeight:
                 normalObstacle.SetActive(true);
                 middlePanel.material = Config.RedColor;
+                cylinders[1].SetActive(true);
                 leftArrow.Rotate(new Vector3(0,0,180));
                 rightArrow.Rotate(new Vector3(0,0,0));
                 text.text = "-" + prop.obstaclePoint;
@@ -90,6 +98,7 @@ public class NormalObstacleObject : MonoBehaviour
             case NormalObstacleType.MultiplyHeight:
                 normalObstacle.SetActive(true);
                 middlePanel.material = Config.BlueColor;
+                cylinders[0].SetActive(true);
                 leftArrow.Rotate(new Vector3(0,0,-90));
                 rightArrow.Rotate(new Vector3(0,0,-90));
                 text.text = "X" + prop.obstaclePoint;
@@ -98,6 +107,7 @@ public class NormalObstacleObject : MonoBehaviour
             case NormalObstacleType.MultiplyWeight:
                 normalObstacle.SetActive(true);
                 middlePanel.material = Config.BlueColor;
+                cylinders[0].SetActive(true);
                 leftArrow.Rotate(new Vector3(0,0,0));
                 rightArrow.Rotate(new Vector3(0,0,180));
                 text.text = "X" + prop.obstaclePoint;
@@ -105,10 +115,18 @@ public class NormalObstacleObject : MonoBehaviour
             
             case NormalObstacleType.Destroyer:
                 destroyer.SetActive(true);
+                for (int i = 0; i < quad.Length; i++)
+                {
+                    quad[i].SetActive(false);
+                }
                 break;
             
             case NormalObstacleType.PartRemover:
                 partRemover.SetActive(true);
+                for (int i = 0; i < quad.Length; i++)
+                {
+                    quad[i].SetActive(false);
+                }
                 break;
         }
     }

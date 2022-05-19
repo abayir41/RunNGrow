@@ -39,6 +39,7 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private UIElementController skinSelectOpenButton;
     [SerializeField] private UIElementController skinSelectMenu;
+    [SerializeField] private UIElementController settingsMenu;
 
 
     [SerializeField] private UIElementController settingsButton;
@@ -135,7 +136,18 @@ public class UIController : MonoBehaviour
 
     public void OpenSettings()
     {
-        
+        skinSelectOpenButton.CloseUI();
+        settingsButton.CloseUI();
+        touchToStart.CloseUI();
+        settingsMenu.OpenUI();
+    }
+    
+    public void CloseSettings()
+    {
+        skinSelectOpenButton.OpenUI();
+        settingsButton.OpenUI();
+        touchToStart.OpenUI();
+        settingsMenu.CloseUI();
     }
     
     public IEnumerator GetSkinUnlockScreen(float from, float to, bool skinUnlocked)

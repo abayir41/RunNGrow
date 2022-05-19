@@ -19,9 +19,9 @@ MonoBehaviour:
   startPoint: {x: 1, y: 1}
   speedOfObstacles: 10
   cameraAnimDuration: 0.3
-  distanceBetweenObstacle: 30
-  redColor: {fileID: 2100000, guid: d2b9c4cf6f39fbc40bb21ccaaed540e0, type: 2}
-  blueColor: {fileID: 2100000, guid: ecfe70d2776569c48a67466b7cca5642, type: 2}
+  distanceBetweenObstacle: 40
+  redColor: {fileID: 2100000, guid: 8de038faf9a0340d9b43bdb70fa8e53b, type: 2}
+  blueColor: {fileID: 2100000, guid: b9fb430f13049465b8799c1c118fce90, type: 2}
   widthScalingCoefficient: 0.1
   heightScalingCoefficient: 0.3
   minWidth: 1

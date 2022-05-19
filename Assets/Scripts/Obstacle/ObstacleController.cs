@@ -12,7 +12,7 @@ public class ObstacleController : MonoBehaviour
     private GameConfig Config => GameController.Config;
     private GameController Controller => GameController.Instance;
 
-    private bool _gameStarted;
+    public bool _gameStarted;
     
     [SerializeField] private GameObject obstacle;
     [SerializeField] private Transform rightFirstObstacle;
@@ -21,7 +21,6 @@ public class ObstacleController : MonoBehaviour
 
     [HideInInspector]
     public List<GameObject> obstacles;
-    [HideInInspector]
     public List<Transform> obstaclesTransforms;
     private List<NormalObstacleObject> _obstacleObjects;
     
@@ -45,6 +44,17 @@ public class ObstacleController : MonoBehaviour
 
         _rightObstacles = new List<GameObject>();
         _rightObstacleObjects = new List<NormalObstacleObject>();
+
+        var obsToMoveL = GameObject.FindGameObjectsWithTag("LeftObs");
+        var obsToMoveR = GameObject.FindGameObjectsWithTag("RightObs");
+        for (int i = 0; i < obsToMoveL.Length; i++)
+        {
+            _leftObstacles.Add(obsToMoveL[i]);
+        }
+        for (int i = 0; i < obsToMoveR.Length; i++)
+        {
+            _rightObstacles.Add(obsToMoveR[i]);
+        }
     }
 
     private void OnEnable()
