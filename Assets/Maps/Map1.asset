@@ -12,37 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df246a2dc932aa640b622f01f298dd18, type: 3}
   m_Name: Map1
   m_EditorClassIdentifier: 
-  leftSideObstacles:
-  - obstacleType: 4
-    obstaclePoint: 4
-  - obstacleType: 4
-    obstaclePoint: 2
-  - obstacleType: 0
-    obstaclePoint: 4
-  - obstacleType: 0
-    obstaclePoint: 5
-  - obstacleType: 8
-    obstaclePoint: 2
-  - obstacleType: 4
-    obstaclePoint: 4
-  - obstacleType: 5
-    obstaclePoint: 4
-  - obstacleType: 0
-    obstaclePoint: 4
-  rightSideObstacles:
-  - obstacleType: 1
-    obstaclePoint: 3
-  - obstacleType: 1
-    obstaclePoint: 2
-  - obstacleType: 0
-    obstaclePoint: 5
-  - obstacleType: 9
-    obstaclePoint: 2
-  - obstacleType: 2
-    obstaclePoint: 2
-  - obstacleType: 6
-    obstaclePoint: 2
-  - obstacleType: 1
-    obstaclePoint: 2
-  - obstacleType: 1
-    obstaclePoint: 3
+  leftObstacleTypes: 00000000050000000600000000000000090000000000000000000000
+  leftObstaclePoint: 05000000040000000300000008000000010000000400000002000000
+  rightObstacleTypes: 01000000040000000000000008000000060000000000000000000000
+  rightObstaclePoint: 04000000070000000500000003000000020000000100000002000000

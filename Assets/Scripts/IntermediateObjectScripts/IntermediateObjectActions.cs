@@ -7,4 +7,5 @@ public class IntermediateObjectActions : MonoBehaviour
 {
     //GameObject that will be transferring, Side that which side object will arrive
     public static Action<Vector2, GameObject, Side> IntermediateObjectArrivedSuccessfully;
+    public static Action<Vector2, GameObject, FinalPlatform> IntermediateObjectFinalPlatformArrivedSuccessfully;
 }

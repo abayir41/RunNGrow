@@ -9,7 +9,8 @@ public enum Side
     Left,
     Middle,
     Right,
-    Boss
+    Boss,
+    Null
 }
 
 public enum NormalObstacleType

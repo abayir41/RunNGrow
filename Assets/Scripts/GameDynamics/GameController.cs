@@ -25,16 +25,13 @@ public class GameController : MonoBehaviour
     private ObstacleController OController => ObstacleController.Instance;
 
     private UIController UIControl => UIController.Instance;
+    
+    private FinalPartController FinalController => FinalPartController.Instance;
 
     #endregion
     
     #region Character
 
-    private GameObject Boss => boss;
-    [SerializeField] private GameObject boss;
-    
-    public Transform BossTransform { get; private set; }
-    
     public List<GameObject> characters;
     private Dictionary<Side, GameObject> CharactersDict { get; set; }
     private Dictionary<Side, CharController> CharacterControllers { get; set; }
@@ -51,20 +48,19 @@ public class GameController : MonoBehaviour
     [SerializeField] private Transform leftSide;
     [SerializeField] private Transform rightSide;
     [SerializeField] private Transform middleSide;
-    [SerializeField] private Transform finalPlatform;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private Transform cameraSideView;
 
     private Vector3 LeftSideVec { get; set; }
     private Vector3 RightSideVec { get; set; }
-    private Vector3 MiddleSideVec { get; set; }
+    public Vector3 MiddleSideVec { get; set; }
 
     private Coroutine _currentIntermediateObjectSpawner;
     private Side _sideOfCurrentIntermediateObjectsGoing;
     
     private bool IsAnyIntermediateObjAlive => IOCInstance.IsThereAnyIntermediateObjectMoving();
     private bool _gameFinishAnimationStarted;
-    private bool _gameFailed;
+    public bool gameFailed;
     
     //Animations
     private static readonly int RunBack = Animator.StringToHash("RunBack");
@@ -77,10 +73,10 @@ public class GameController : MonoBehaviour
     [BoxGroup("Base/Right")]
     [SerializeField] private List<float> multiplyAmount;
     
-    private float _speedOfFinalPart;
+    public float SpeedOfFinalPart { get; private set; }
     private float _gameTotalPoints;
     private bool _bossHitTheWall;
-    public bool _gameStarted;
+    public bool gameStarted;
 
     [Button]
     public void RemovePlayerCache()
@@ -101,8 +97,7 @@ public class GameController : MonoBehaviour
         LeftSideVec = leftSide.position;
         RightSideVec = rightSide.position;
         MiddleSideVec = middleSide.position;
-        BossTransform = Boss.GetComponent<Transform>();
-        _speedOfFinalPart = Config.SpeedOfFinalPart;
+        SpeedOfFinalPart = Config.SpeedOfFinalPart;
 
         //List Cache
         CharactersDict = characters
@@ -124,21 +119,6 @@ public class GameController : MonoBehaviour
         GameActions.GameFinishAnimationStarted += () => Debug.Log("Game Finish Anim Started");
         GameActions.GameEndedWithWinning += () => Debug.Log("Game Win");
 
-
-        //painting and text setting
-        var step = 0.0f;
-        var matBlock = new MaterialPropertyBlock();
-        for (var i = 0; i < multiplierBlocks.Count; i++)
-        {
-            var multiplierBlock = multiplierBlocks[i];
-            var color = Color.HSVToRGB(step, 1, 1);
-            matBlock.SetColor("_Color", color);
-            multiplierBlock.GetComponent<Renderer>().SetPropertyBlock(matBlock);
-            step += 1.0f / multiplierBlocks.Count;
-
-            //Make one decimal
-            multiplierBlock.GetComponentInChildren<TextMeshPro>().text = $"{multiplyAmount[i]:0.0}" + "X";
-        }
         
         //middleChar Stop
         CharactersDict[Side.Middle].GetComponentsInChildren<Animator>().ForEach(animator => animator.speed = 0);
@@ -146,17 +126,9 @@ public class GameController : MonoBehaviour
         //Spawn Obstacles
         var map = MapKeeper.Instance.GetMap();
         OController.SpawnMapObstacles(map);
+        FinalController.InstantiateFinalPart();
 
-        //set their position
-        switch (MapAlongAxis)
-        {
-            case Axis.X:
-                finalPlatform.position = new Vector3(OController.LastObstaclePos.x + Config.DistanceBetweenFinalAndLastObstacle, MiddleSideVec.y, MiddleSideVec.z);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-        
+
         DOTween.SetTweensCapacity(1000,50);
         
         UIControl.SetCoinText(MoneySystem.TotalPoints);
@@ -184,28 +156,19 @@ public class GameController : MonoBehaviour
     
     private void GameStarted()
     {
-        _gameStarted = true;
+        gameStarted = true;
     }
     void Update()
     {
         
-        if(!_gameStarted) return;
-
-        //Move Final Platform
-        var along = MapAlongAxis switch
-        {
-            Axis.X => Vector3.right,
-            Axis.Z => Vector3.forward,
-            _ => Vector3.zero
-        };
-
-        finalPlatform.position -= along * (_speedOfFinalPart * Time.deltaTime);
+        if(!gameStarted) return;
+        if(gameFailed) return;
         
-        
-        //Check if two char died
+        //Check if two char die
         if (LeftAndRightCanShrink.All(pair => pair.Value) && !_gameFinishAnimationStarted && !IsAnyIntermediateObjAlive)
         {
-            _gameFailed = true;
+            gameFailed = true;
+            UIControl.OpenDeathScreen();
             GameActions.GameFailed?.Invoke();
         }
     
@@ -215,7 +178,7 @@ public class GameController : MonoBehaviour
         switch (MapAlongAxis)
         {
             case Axis.X:
-                if(_gameFinishAnimationStarted || _gameFailed) break;
+                if(_gameFinishAnimationStarted || gameFailed) break;
                 
                 if (lastObjPos.x < CharacterTransforms[Side.Left].position.x)
                 {
@@ -223,7 +186,7 @@ public class GameController : MonoBehaviour
                     if(_currentIntermediateObjectSpawner != null)
                         StopCoroutine(_currentIntermediateObjectSpawner);
 
-                    _speedOfFinalPart = 0;
+                    SpeedOfFinalPart = 0;
                     
                     StartCoroutine(StartEndAnimation());
                     GameActions.GameFinishAnimationStarted?.Invoke();
@@ -235,7 +198,7 @@ public class GameController : MonoBehaviour
         
         
         //Screen Touch Control
-        if (Input.touchCount > 0 && !_gameFinishAnimationStarted && !_gameFailed)
+        if (Input.touchCount > 0 && !_gameFinishAnimationStarted && !gameFailed)
         {
             var touch = Input.GetTouch(0);
 
@@ -295,46 +258,39 @@ public class GameController : MonoBehaviour
         
         //Start Boss throw balls
         CharactersDict[Side.Middle].GetComponentsInChildren<Animator>().ForEach(animator => animator.speed = 1);
-        CharactersDict[Side.Boss].GetComponentsInChildren<Animator>()
-            .ForEach(animator => animator.SetBool(RunBack, true));
-        
-        _speedOfFinalPart = Config.SpeedOfFinalPart;
-        CharacterTransforms[Side.Boss].parent = null;
+        SpeedOfFinalPart = Config.SpeedOfFinalPart;
+
         GameActions.BossRunningStarted?.Invoke();
 
+        CharactersDict[Side.Middle].GetComponentsInChildren<Animator>().ForEach(animator => animator.SetFloat(SpeedOfThrow, config.ThrowAnimationSpeed));
+        
+        
         //set throwing ball speed while throwing
         while ((!CharacterControllers[Side.Middle].IsCharacterGhostMode || IsAnyIntermediateObjAlive) && !_bossHitTheWall)
         {
-            var scale = CharacterControllers[Side.Middle].PointOfChar.x +
-                        CharacterControllers[Side.Middle].PointOfChar.y;
-            
-            if (scale < Config.MinScaleForThrow)
-                scale = Config.MinScaleForThrow;
-            else if (scale > Config.MaxScaleForThrow)
-                scale = Config.MaxScaleForThrow;
-
-            var speed = Utilities.ConvertFloatToInterval(scale, Config.MinScaleForThrow,
-                Config.MaxScaleForThrow, Config.MinThrowSpeed, Config.MaxThrowSpeed);
-            
-            CharactersDict[Side.Middle].GetComponentsInChildren<Animator>().ForEach(animator => animator.SetFloat(SpeedOfThrow, speed));
             yield return null;
         }
         
         //Boss Die
-        CharactersDict[Side.Boss].GetComponentsInChildren<Animator>()
-            .ForEach(animator => animator.SetBool(Die, true));
 
         //stop the movement of last part
-        _speedOfFinalPart = 0;
-        
+        SpeedOfFinalPart = 0;
+        FinalPlatform finalPlatform;
+        if (FinalController.finalPlatforms.Any(platform => !platform.gotHit))
+        {
+            finalPlatform = FinalController.finalPlatforms.First(platform => platform.gotHit == false);
+        }
+        else
+        {
+            finalPlatform = FinalController.finalPlatforms.Last();
+        }
+        finalPlatform.gameObject.transform.DOScale(finalPlatform.gameObject.transform.localScale * 1.1f, 1).SetLoops(-1, LoopType.Yoyo);
+        var addPoint = (int) (_gameTotalPoints * finalPlatform.multiplier);
         //duration of Die
-        yield return new WaitForSeconds(2.3f);
+        yield return new WaitForSeconds(2f);
 
-        var bossTrans = boss.transform.position;
-        var multiplierBlock = multiplierBlocks.OrderBy(o => Vector3.Distance(bossTrans, o.transform.position)).First();
-        var multiplier = multiplyAmount[multiplierBlocks.IndexOf(multiplierBlock)];
         
-        var addPoint = (int) (_gameTotalPoints * multiplier);
+        
         
         
         UIControl.OpenGameScorePart();
@@ -358,6 +314,8 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
+        
+        //Skin Unlock Animation
         /*if (SkinSystem.Instance.IsThereAnyNewSkin())
         {
             int skinMinPoint;
@@ -387,9 +345,12 @@ public class GameController : MonoBehaviour
 
         }
         else
-        {*/
+        {
             UIControl.OpenEndTouchToContinue();
-        //}
+        }
+        */
+        
+        UIControl.OpenBossEndContinue();
         
         ScoreSystem.Instance.AddPoint(addPoint);
         MoneySystem.Instance.AddPoint(addPoint);
@@ -398,10 +359,14 @@ public class GameController : MonoBehaviour
         GameActions.GameEndedWithWinning?.Invoke();
     }
 
+    private int platformIndex;
     public void MiddleCharSendOneIntermediate()
     {
+        if(platformIndex == FinalController.finalPlatforms.Count - 1)
+            BossHitTheMax();
         //the parametre Side Middle Doesnt important
-        CharacterControllers[Side.Middle].TransferOne(Side.Boss);
+        CharacterControllers[Side.Middle].TransferOneToPos(FinalController.finalPlatforms[platformIndex], 0.1f);
+        platformIndex++;
     }
 
     private void ScreenTouched(Side side)

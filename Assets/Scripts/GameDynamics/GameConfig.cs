@@ -67,16 +67,12 @@ public class GameConfig : ScriptableObject
     //-------------------------------
     //Middle Character Configurations
     //-------------------------------
-    public float MinThrowSpeed => minThrowSpeed;
-    public float MaxThrowSpeed => maxThrowSpeed;
-    public float MinScaleForThrow => minScaleForThrow;
-    public float MaxScaleForThrow => maxScaleForThrow;
+    public float ThrowAnimationSpeed => throwAnimationSpeed;
+
     
     [Header("MiddleChar Configurations")] 
-    [SerializeField] private float minThrowSpeed;
-    [SerializeField] private float maxThrowSpeed;
-    [SerializeField] private float minScaleForThrow;
-    [SerializeField] private float maxScaleForThrow;
+    [SerializeField] private float throwAnimationSpeed;
+ 
     
     //-------------------------------
     //Final Part Configurations

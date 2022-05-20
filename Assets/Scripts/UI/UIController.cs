@@ -29,9 +29,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private UIElementController skinBackEffect;
     [SerializeField] private UIElementController skinCover;
 
-    [SerializeField] private UIElementController endTouchToContinue;
-    [SerializeField] private UIElementController settings;
-    
+    [SerializeField] private UIElementController deathScreen;
+
     private List<TweenerCore<Color, Color, ColorOptions>> _touchToStartLoopAnim;
 
     [SerializeField] private Image unlockSkinFrontImage;
@@ -40,9 +39,19 @@ public class UIController : MonoBehaviour
     [SerializeField] private UIElementController skinSelectOpenButton;
     [SerializeField] private UIElementController skinSelectMenu;
     [SerializeField] private UIElementController settingsMenu;
-
-
+    
+ 
     [SerializeField] private UIElementController settingsButton;
+
+    [SerializeField] private UIElementController bossEndScreenContinue;
+
+    [SerializeField] private Image soundImage;
+    [SerializeField] private Image vibrationImage;
+    [SerializeField] private Sprite soundEnable;
+    [SerializeField] private Sprite soundDisable;
+    [SerializeField] private Sprite vibrationEnable;
+    [SerializeField] private Sprite vibrationDisable;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -61,8 +70,10 @@ public class UIController : MonoBehaviour
         skinBackEffect.Minimize().Complete();
         skinCover.Minimize().Complete();
         
-        endTouchToContinue.CloseUI();
-        endTouchToContinue.StartFadeLoop();
+        deathScreen.CloseUI();
+
+        bossEndScreenContinue.FadeOut();
+        
         
         skinSelectMenu.CloseUI();
     }
@@ -77,6 +88,19 @@ public class UIController : MonoBehaviour
         GameActions.GameStarted -= StartTheGameUI;
     }
 
+    public void ToggleVibration()
+    {
+        PlayerPrefs.SetInt("Vibration",PlayerPrefs.GetInt("Vibration") == 0 ? 1 : 0);
+        if(VibrationManager.VibrationEnabled) VibrationManager.Vibrate?.Invoke();
+        vibrationImage.sprite = vibrationImage.sprite == vibrationEnable ? vibrationDisable : vibrationEnable;
+    }
+
+    public void ToggleSound()
+    {
+        PlayerPrefs.SetInt("Sound",PlayerPrefs.GetInt("Sound") == 0 ? 1 : 0);
+        soundImage.sprite = soundImage.sprite == soundEnable ? soundDisable : soundEnable;
+    }
+    
     #region GameMethods
 
     public void StartGame()
@@ -103,10 +127,10 @@ public class UIController : MonoBehaviour
         gameScorePart.OpenUI();
     }
 
-    public void OpenEndTouchToContinue()
+    public void OpenDeathScreen()
     {
-        endTouchToContinue.OpenUI();
-        endTouchToContinue.StartFadeLoop();   
+        deathScreen.OpenUI();
+        deathScreen.StartFadeLoop();   
     }
 
     public void Restart()
@@ -119,6 +143,11 @@ public class UIController : MonoBehaviour
         skinSelectOpenButton.CloseUI();
         touchToStart.CloseUI();
         skinSelectMenu.OpenUI();
+    }
+
+    public void OpenBossEndContinue()
+    {
+        bossEndScreenContinue.FadeOutBackWard();
     }
     
     public void CloseSkinSelectMenu()
@@ -144,7 +173,7 @@ public class UIController : MonoBehaviour
     
     public void CloseSettings()
     {
-        skinSelectOpenButton.OpenUI();
+        //skinSelectOpenButton.OpenUI();
         settingsButton.OpenUI();
         touchToStart.OpenUI();
         settingsMenu.CloseUI();
@@ -185,8 +214,9 @@ public class UIController : MonoBehaviour
             skinBackEffect.NormalSize();
         }
         
-        OpenEndTouchToContinue();
     }
 
+    
+    
     #endregion
 }

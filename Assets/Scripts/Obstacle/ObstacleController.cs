@@ -12,7 +12,8 @@ public class ObstacleController : MonoBehaviour
     private GameConfig Config => GameController.Config;
     private GameController Controller => GameController.Instance;
 
-    public bool _gameStarted;
+    private bool _gameStarted;
+    private bool _gameFailed;
     
     [SerializeField] private GameObject obstacle;
     [SerializeField] private Transform rightFirstObstacle;
@@ -60,13 +61,16 @@ public class ObstacleController : MonoBehaviour
     private void OnEnable()
     {
         GameActions.GameStarted += GameStarted;
+        GameActions.GameFailed += GameFailed;
     }
 
-    
+   
+
 
     private void OnDisable()
     {
         GameActions.GameStarted -= GameStarted;
+        GameActions.GameFailed -= GameFailed;
     }
 
     private void GameStarted()
@@ -74,9 +78,15 @@ public class ObstacleController : MonoBehaviour
         _gameStarted = true;
     }
     
+    private void GameFailed()
+    {
+        _gameFailed = true;
+    }
+    
     private void Update()
     {
         if(!_gameStarted) return;
+        if(_gameFailed) return;
 
         var along = Controller.MapAlongAxis switch
         {

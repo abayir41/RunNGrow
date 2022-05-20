@@ -26,8 +26,7 @@ public class CharController : MonoBehaviour
     public bool IsCharacterGhostMode { get; private set; }
 
     [ShowIf("sideOfChar", Side.Middle)] 
-    [SerializeField] private Transform handPosition; 
-    private Transform BossPos => ControllerInstance.BossTransform;
+    [SerializeField] private Transform handPosition;
 
     //Visuals
     private List<GameObject> _partOfChars;
@@ -215,7 +214,7 @@ public class CharController : MonoBehaviour
             else
             {
                 startTransformPosition = handPosition.position;
-                endTransformPosition = BossPos.position;
+                endTransformPosition = ControllerInstance.CharacterTransforms[goingTo].position;
             }
             
             var sizeX = 0;
@@ -242,6 +241,51 @@ public class CharController : MonoBehaviour
         }
     }
 
+    
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
+    public void TransferOneToPos( FinalPlatform platform, float duration )
+    {
+        var leaveSide = SideOfChar;
+
+        if (CanCharShrinkMore)
+        {
+            Vector3 startTransformPosition;
+            Vector3 endTransformPosition;
+            
+            if (sideOfChar != Side.Middle)
+            {
+                startTransformPosition = ControllerInstance.CharacterTransforms[sideOfChar].position;
+                endTransformPosition = platform.pos.position;
+            }
+            else
+            {
+                startTransformPosition = handPosition.position;
+                endTransformPosition = platform.pos.position;
+            }
+            
+            var sizeX = 0;
+            var sizeY = 0;
+
+            if (PointOfChar.x > 1.0f)
+                sizeX = 1;
+            
+            if (PointOfChar.y > 1.0f)
+                sizeY = 1;
+            
+            if (PointOfChar.x == 1 && PointOfChar.y == 1)
+            {
+                sizeX = 1;
+                sizeY = 1;
+            }
+            
+            
+            var resultSize = new Vector2(sizeX, sizeY);
+            
+            IntermediateStartedToMove(resultSize, leaveSide);
+
+            IOCInstance.MoveIntermediateObject(startTransformPosition, endTransformPosition, duration,platform, resultSize);
+        }
+    }
     #endregion
     
     private void Update()

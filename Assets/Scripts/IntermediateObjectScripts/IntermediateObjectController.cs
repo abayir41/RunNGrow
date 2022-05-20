@@ -29,15 +29,23 @@ public class IntermediateObjectController : MonoBehaviour
     private void OnEnable()
     {
         IntermediateObjectActions.IntermediateObjectArrivedSuccessfully += IntermediateObjectArrivedSuccessfully;
+        IntermediateObjectActions.IntermediateObjectFinalPlatformArrivedSuccessfully += IntermediateObjectFinalPlatformArrivedSuccessfully;
         GameActions.GameFinishAnimationStarted += GameFinishAnimationStarted;
     }
-
     
 
     private void OnDisable()
     {
         IntermediateObjectActions.IntermediateObjectArrivedSuccessfully -= IntermediateObjectArrivedSuccessfully;
+        IntermediateObjectActions.IntermediateObjectFinalPlatformArrivedSuccessfully -= IntermediateObjectFinalPlatformArrivedSuccessfully;
         GameActions.GameFinishAnimationStarted -= GameFinishAnimationStarted;
+    }
+    
+    private void IntermediateObjectFinalPlatformArrivedSuccessfully(Vector2 arg1, GameObject arg2, FinalPlatform arg3)
+    {
+        arg2.SetActive(false);
+        
+        _objectsInPool.Add(arg2);
     }
     
     private void GameFinishAnimationStarted()
@@ -93,6 +101,38 @@ public class IntermediateObjectController : MonoBehaviour
         {
             _intermediateObjectsMoveAnims.Remove(anims);
             IntermediateObjectActions.IntermediateObjectArrivedSuccessfully?.Invoke(size, obj, goingTo);
+        });
+
+        //remove from pool, add actives
+        _objectsInPool.Remove(obj);
+        _activeObjects.Add(obj);
+    }
+    
+    public void MoveIntermediateObject(Vector3 startPos, Vector3 endPos, float duration, FinalPlatform platform, Vector2 size)
+    {
+        var obj = GetObject();
+        
+        var objTransform = obj.transform;
+
+        //make it visible
+        objTransform.position = startPos;
+        obj.SetActive(true);
+
+        var highestY = Math.Max(startPos.y, endPos.y);
+
+        //move anim, make command on one anim, they will complete same time
+        var animX = objTransform.DOMoveX(endPos.x, duration).SetEase(Ease.Linear);
+        var animYp1 = objTransform.DOMoveY(highestY + GameController.Config.Amplitude, duration/2).SetEase(Ease.OutCirc);
+        var animYp2 = objTransform.DOMoveY(endPos.y, duration/2).SetDelay(duration/2).SetEase(Ease.InCirc);
+        var animZ = objTransform.DOMoveZ(endPos.z, duration).SetEase(Ease.Linear);
+
+        var anims = new TweenObjectAnims(animX, animYp1, animYp2, animZ);
+        //Save/discard Anim
+        _intermediateObjectsMoveAnims.Add(anims);
+        anims.SetOnComplete(() =>
+        {
+            _intermediateObjectsMoveAnims.Remove(anims);
+            IntermediateObjectActions.IntermediateObjectFinalPlatformArrivedSuccessfully?.Invoke(size, obj, platform);
         });
 
         //remove from pool, add actives

@@ -29,15 +29,12 @@ MonoBehaviour:
   minScaleForDelay: 1
   maxScaleForDelay: 20
   scalingAnimationDuration: 0.5
-  minThrowSpeed: 7
-  maxThrowSpeed: 10
-  minScaleForThrow: 2
-  maxScaleForThrow: 10
-  distanceBetweenFinalAndLastObstacle: 3
+  throwAnimationSpeed: 3
+  distanceBetweenFinalAndLastObstacle: 6
   speedOfFinalPart: 10
   uiMoveAnimationDuration: 3
   uiFadeOutAnimationDuration: 1
   uiFadeLoopAnimationDuration: 1.6
-  uiTimeBetweenPerScoreAdding: 0.1
+  uiTimeBetweenPerScoreAdding: 0.01
   uiMinimizeTime: 0.4
   durationOfSkinUnlockAnimation: 5
