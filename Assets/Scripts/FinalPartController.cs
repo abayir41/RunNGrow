@@ -34,47 +34,37 @@ public class FinalPartController : MonoBehaviour
 
     }
 
-    private bool _activationPart;
+
     public void InstantiateFinalPart()
     {
         for (var i = 0; i < amountOfPlatform; i++)
         {
             var platform = Instantiate(platformObj, finalPlatformParent);
 
-            _activationPart = !_activationPart;
+
             
             _multiplierBlocks.Add(platform);
             
             platform.GetComponent<FinalPlatform>().multiplier = 1 + i * diffBetweenMultiplier;
+            
+            platform.GetComponent<FinalPlatform>().racket.transform.localScale *=
+                1 + i * diffBetweenMultiplier > 2 ? 2 : 1 + i * diffBetweenMultiplier;
+            platform.GetComponent<FinalPlatform>().pos = platform.GetComponent<FinalPlatform>().racket.transform.GetChild(0);
 
-            if (_activationPart)
-            {
-                platform.GetComponent<FinalPlatform>().leftObject.SetActive(false);
-                platform.GetComponent<FinalPlatform>().rightObject.transform.localScale *=
-                    1 + i * diffBetweenMultiplier > 2 ? 2 : 1 + i * diffBetweenMultiplier;
-                platform.GetComponent<FinalPlatform>().pos = platform.GetComponent<FinalPlatform>().rightObject.transform.GetChild(0);
-            }
-            else
-            {
-                platform.GetComponent<FinalPlatform>().rightObject.SetActive(false);
-                platform.GetComponent<FinalPlatform>().leftObject.transform.localScale *=
-                    1 + i * diffBetweenMultiplier > 2 ? 2 : 1 + i * diffBetweenMultiplier;
-                platform.GetComponent<FinalPlatform>().pos = platform.GetComponent<FinalPlatform>().leftObject.transform.GetChild(0);
-            }
-                
-            
-            
+
             switch (GameController.Instance.MapAlongAxis)
             {
                 case Axis.X:
                     var finalStartPosition = finalPlatformStart.position;
-                    platform.transform.position = new Vector3(finalStartPosition.x + (i+1)*_distance, finalStartPosition.y, finalStartPosition.z);
-                    lastWall.position = new Vector3(finalStartPosition.x + (i+1)*_distance, finalStartPosition.y, finalStartPosition.z);
+                    platform.transform.position = new Vector3(finalStartPosition.x + (i + 1) * _distance,
+                        finalStartPosition.y, finalStartPosition.z);
+                    lastWall.position = new Vector3(finalStartPosition.x + (i + 1) * _distance, finalStartPosition.y,
+                        finalStartPosition.z);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             finalPlatforms.Add(platform.GetComponent<FinalPlatform>());
         }
         

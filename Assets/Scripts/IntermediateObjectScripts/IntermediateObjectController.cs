@@ -117,24 +117,30 @@ public class IntermediateObjectController : MonoBehaviour
         //make it visible
         objTransform.position = startPos;
         obj.SetActive(true);
-
-        var highestY = Math.Max(startPos.y, endPos.y);
+        
 
         //move anim, make command on one anim, they will complete same time
-        var animX = objTransform.DOMoveX(endPos.x, duration).SetEase(Ease.Linear);
-        var animYp1 = objTransform.DOMoveY(highestY + GameController.Config.Amplitude, duration/2).SetEase(Ease.OutCirc);
-        var animYp2 = objTransform.DOMoveY(endPos.y, duration/2).SetDelay(duration/2).SetEase(Ease.InCirc);
+        var animX = objTransform.DOMoveX(endPos.x - 3, duration).SetEase(Ease.Linear);
+        var animYp1 = objTransform.DOMoveY(endPos.y, duration).SetEase(Ease.Linear);
         var animZ = objTransform.DOMoveZ(endPos.z, duration).SetEase(Ease.Linear);
 
-        var anims = new TweenObjectAnims(animX, animYp1, animYp2, animZ);
+        var anims = new TweenObjectAnims(animX, animYp1, animYp1, animZ);
         //Save/discard Anim
         _intermediateObjectsMoveAnims.Add(anims);
-        anims.SetOnComplete(() =>
-        {
-            _intermediateObjectsMoveAnims.Remove(anims);
-            IntermediateObjectActions.IntermediateObjectFinalPlatformArrivedSuccessfully?.Invoke(size, obj, platform);
-        });
 
+        var sc = obj.GetComponent<IntermediateObject>();
+
+        sc.Action += () =>
+        {
+            anims.SetOnComplete(() =>
+            {
+                _intermediateObjectsMoveAnims.Remove(anims);
+                IntermediateObjectActions.IntermediateObjectFinalPlatformArrivedSuccessfully?.Invoke(size, obj, platform);
+            });
+
+        };
+        
+        
         //remove from pool, add actives
         _objectsInPool.Remove(obj);
         _activeObjects.Add(obj);

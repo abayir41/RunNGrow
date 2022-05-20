@@ -32,7 +32,8 @@ MonoBehaviour:
   scalingAnimationDuration: 0.5
   throwAnimationSpeed: 3
   ballPower: 5
-  ballAnimationDuration: 0.2
+  ballAnimationDuration: 0.5
+  racketAnimation: 1
   distanceBetweenFinalAndLastObstacle: 16
   speedOfFinalPart: 10
   uiMoveAnimationDuration: 3
