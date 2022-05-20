@@ -70,14 +70,14 @@ public class GameConfig : ScriptableObject
     //Middle Character Configurations
     //-------------------------------
     public float ThrowAnimationSpeed => throwAnimationSpeed;
-    public float BallAnimationDuration => ballAnimationDuration;
+    public float BallSpeed => ballSpeed;
     public int BallPower => ballPower;
     public float RacketAnimation => racketAnimation;
     
     [Header("MiddleChar Configurations")] 
     [SerializeField] private float throwAnimationSpeed;
     [SerializeField] private int ballPower;
-    [SerializeField] private float ballAnimationDuration;
+    [SerializeField] private float ballSpeed;
     [SerializeField] private float racketAnimation;
  
     

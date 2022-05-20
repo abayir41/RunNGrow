@@ -108,7 +108,7 @@ public class IntermediateObjectController : MonoBehaviour
         _activeObjects.Add(obj);
     }
     
-    public void MoveIntermediateObject(Vector3 startPos, Vector3 endPos, float duration, FinalPlatform platform, Vector2 size)
+    public void MoveIntermediateObject(Vector3 startPos, Transform endPos, float speed, FinalPlatform platform, Vector2 size)
     {
         var obj = GetObject();
         
@@ -119,25 +119,19 @@ public class IntermediateObjectController : MonoBehaviour
         obj.SetActive(true);
         
 
-        //move anim, make command on one anim, they will complete same time
-        var animX = objTransform.DOMoveX(endPos.x - 3, duration).SetEase(Ease.Linear);
-        var animYp1 = objTransform.DOMoveY(endPos.y, duration).SetEase(Ease.Linear);
-        var animZ = objTransform.DOMoveZ(endPos.z, duration).SetEase(Ease.Linear);
-
-        var anims = new TweenObjectAnims(animX, animYp1, animYp1, animZ);
-        //Save/discard Anim
-        _intermediateObjectsMoveAnims.Add(anims);
-
         var sc = obj.GetComponent<IntermediateObject>();
+        sc.speed = speed;
+        sc.target = endPos;
+        sc.objectArrived = false;
 
+        var anims = new TweenObjectAnims(null, null, null, null);
+
+        _intermediateObjectsMoveAnims.Add(anims);
+        
         sc.Action += () =>
         {
-            anims.SetOnComplete(() =>
-            {
-                _intermediateObjectsMoveAnims.Remove(anims);
-                IntermediateObjectActions.IntermediateObjectFinalPlatformArrivedSuccessfully?.Invoke(size, obj, platform);
-            });
-
+            _intermediateObjectsMoveAnims.Remove(anims);
+            IntermediateObjectActions.IntermediateObjectFinalPlatformArrivedSuccessfully?.Invoke(size, obj, platform);
         };
         
         

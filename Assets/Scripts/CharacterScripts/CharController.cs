@@ -243,7 +243,7 @@ public class CharController : MonoBehaviour
 
     
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public void TransferOneToPos( FinalPlatform platform, float duration , int ballPower)
+    public void TransferOneToPos( FinalPlatform platform, float speed , int ballPower)
     {
         var leaveSide = SideOfChar;
 
@@ -283,7 +283,7 @@ public class CharController : MonoBehaviour
             
             IntermediateStartedToMove(resultSize, leaveSide);
 
-            IOCInstance.MoveIntermediateObject(startTransformPosition, endTransformPosition, duration,platform, resultSize);
+            IOCInstance.MoveIntermediateObject(startTransformPosition,platform.pos , speed ,platform, resultSize);
         }
     }
     #endregion

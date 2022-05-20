@@ -18,6 +18,12 @@ public class GameController : MonoBehaviour
 
     public Axis MapAlongAxis => alongAxis;
     [SerializeField] private Axis alongAxis;
+
+    public static int LevelIndex
+    {
+        get => PlayerPrefs.GetInt("Level");
+        private set => PlayerPrefs.SetInt("Level", value);
+    } 
     
     #region Controllers
 
@@ -138,6 +144,7 @@ public class GameController : MonoBehaviour
     {
         GameActions.BossHitTheMax += BossHitTheMax;
         GameActions.GameStarted += GameStarted;
+        GameActions.GameEndedWithWinning += GameEndedWithWinning;
     }
 
     
@@ -146,8 +153,14 @@ public class GameController : MonoBehaviour
     {
         GameActions.BossHitTheMax -= BossHitTheMax;
         GameActions.GameStarted -= GameStarted;
+        GameActions.GameEndedWithWinning -= GameEndedWithWinning;
     }
-    
+
+    private void GameEndedWithWinning()
+    {
+        LevelIndex++;
+    }
+
     private void BossHitTheMax()
     {
         CharactersDict[Side.Middle].GetComponentsInChildren<Animator>().ForEach(animator => animator.speed = 0);
@@ -365,7 +378,7 @@ public class GameController : MonoBehaviour
         if(_platformIndex == FinalController.finalPlatforms.Count - 1)
             BossHitTheMax();
         //the parametre Side Middle Doesnt important
-        CharacterControllers[Side.Middle].TransferOneToPos(FinalController.finalPlatforms[_platformIndex], config.BallAnimationDuration, config.BallPower);
+        CharacterControllers[Side.Middle].TransferOneToPos(FinalController.finalPlatforms[_platformIndex], config.BallSpeed, config.BallPower);
         _platformIndex++;
     }
 
