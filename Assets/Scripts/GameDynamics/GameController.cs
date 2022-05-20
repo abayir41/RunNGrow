@@ -180,7 +180,7 @@ public class GameController : MonoBehaviour
             case Axis.X:
                 if(_gameFinishAnimationStarted || gameFailed) break;
                 
-                if (lastObjPos.x < CharacterTransforms[Side.Left].position.x)
+                if (lastObjPos.x + config.DistanceLastObstacleFinishPoint < CharacterTransforms[Side.Left].position.x)
                 {
                     _gameFinishAnimationStarted = true;
                     if(_currentIntermediateObjectSpawner != null)
@@ -278,7 +278,7 @@ public class GameController : MonoBehaviour
         FinalPlatform finalPlatform;
         if (FinalController.finalPlatforms.Any(platform => !platform.gotHit))
         {
-            finalPlatform = FinalController.finalPlatforms.First(platform => platform.gotHit == false);
+            finalPlatform = FinalController.finalPlatforms.Last(platform => platform.gotHit);
         }
         else
         {
@@ -359,14 +359,14 @@ public class GameController : MonoBehaviour
         GameActions.GameEndedWithWinning?.Invoke();
     }
 
-    private int platformIndex;
+    private int _platformIndex;
     public void MiddleCharSendOneIntermediate()
     {
-        if(platformIndex == FinalController.finalPlatforms.Count - 1)
+        if(_platformIndex == FinalController.finalPlatforms.Count - 1)
             BossHitTheMax();
         //the parametre Side Middle Doesnt important
-        CharacterControllers[Side.Middle].TransferOneToPos(FinalController.finalPlatforms[platformIndex], 0.1f);
-        platformIndex++;
+        CharacterControllers[Side.Middle].TransferOneToPos(FinalController.finalPlatforms[_platformIndex], config.BallAnimationDuration, config.BallPower);
+        _platformIndex++;
     }
 
     private void ScreenTouched(Side side)

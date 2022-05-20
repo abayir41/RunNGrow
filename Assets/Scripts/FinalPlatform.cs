@@ -21,10 +21,12 @@ public class FinalPlatform : MonoBehaviour
 
     private void IntermediateObjectFinalPlatformArrivedSuccessfully(Vector2 arg1, GameObject arg2, FinalPlatform arg3)
     {
-        gotHit = true;
+        
         
         if(arg3 != this) return;
 
+        gotHit = true;
+        
         if (leftObject.activeSelf)
         {
             leftObject.transform.parent = null;

@@ -62,15 +62,20 @@ public class ObstacleController : MonoBehaviour
     {
         GameActions.GameStarted += GameStarted;
         GameActions.GameFailed += GameFailed;
+        GameActions.GameFinishAnimationStarted += GameFinishAnimationStarted;
     }
 
-   
+    private void GameFinishAnimationStarted()
+    {
+        _gameFinishedAnimStarted = true;
+    }
 
 
     private void OnDisable()
     {
         GameActions.GameStarted -= GameStarted;
         GameActions.GameFailed -= GameFailed;
+        GameActions.GameFinishAnimationStarted -= GameFinishAnimationStarted;
     }
 
     private void GameStarted()
@@ -82,11 +87,14 @@ public class ObstacleController : MonoBehaviour
     {
         _gameFailed = true;
     }
-    
+
+    private bool _gameFinishedAnimStarted;
     private void Update()
     {
         if(!_gameStarted) return;
         if(_gameFailed) return;
+        if(_gameFinishedAnimStarted) return;
+        ;
 
         var along = Controller.MapAlongAxis switch
         {

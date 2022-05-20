@@ -36,9 +36,11 @@ public class GameConfig : ScriptableObject
     public float DistanceBetweenObstacle => distanceBetweenObstacle;
     public Material RedColor => redColor;
     public Material BlueColor => blueColor;
+    public float DistanceLastObstacleFinishPoint => distanceLastObstacleFinishPoint;
     
     [Header("Obstacles Configurations")] 
     [SerializeField] private float distanceBetweenObstacle;
+    [SerializeField] private float distanceLastObstacleFinishPoint;
     [SerializeField] private Material redColor;
     [SerializeField] private Material blueColor;
 
@@ -68,10 +70,13 @@ public class GameConfig : ScriptableObject
     //Middle Character Configurations
     //-------------------------------
     public float ThrowAnimationSpeed => throwAnimationSpeed;
-
+    public float BallAnimationDuration => ballAnimationDuration;
+    public int BallPower => ballPower;
     
     [Header("MiddleChar Configurations")] 
     [SerializeField] private float throwAnimationSpeed;
+    [SerializeField] private int ballPower;
+    [SerializeField] private float ballAnimationDuration;
  
     
     //-------------------------------

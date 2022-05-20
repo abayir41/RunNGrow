@@ -243,7 +243,7 @@ public class CharController : MonoBehaviour
 
     
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public void TransferOneToPos( FinalPlatform platform, float duration )
+    public void TransferOneToPos( FinalPlatform platform, float duration , int ballPower)
     {
         var leaveSide = SideOfChar;
 
@@ -266,16 +266,16 @@ public class CharController : MonoBehaviour
             var sizeX = 0;
             var sizeY = 0;
 
-            if (PointOfChar.x > 1.0f)
-                sizeX = 1;
+            if (PointOfChar.x > ballPower)
+                sizeX = ballPower;
             
-            if (PointOfChar.y > 1.0f)
-                sizeY = 1;
+            if (PointOfChar.y > ballPower)
+                sizeY = ballPower;
             
-            if (PointOfChar.x == 1 && PointOfChar.y == 1)
+            if (PointOfChar.x <= ballPower && PointOfChar.y <= ballPower)
             {
-                sizeX = 1;
-                sizeY = 1;
+                sizeX = (int)PointOfChar.x;
+                sizeY = (int)PointOfChar.y;
             }
             
             
