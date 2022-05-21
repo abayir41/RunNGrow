@@ -75,7 +75,7 @@ public class MapKeeper : MonoBehaviour
             NormalObstacleType rightObstacle;
             int rightObstaclePoint;
             
-            if (randFloat >= 0 && randFloat <= 60)
+            if (randFloat >= 0 && randFloat <= 1)
             {
                 var randInt = Random.Range(0, leftObstacleTypes.Count);
                 
@@ -86,7 +86,7 @@ public class MapKeeper : MonoBehaviour
                 rightObstaclePoint = rightObstaclePoints[randInt];
                 
             }
-            else if (randFloat > 60 && randFloat <= 85)
+            else if (randFloat > 1 && randFloat <= 2)
             {
                 var randInt = Random.Range(0, leftObstacleTypes2.Count);
                 
@@ -98,7 +98,7 @@ public class MapKeeper : MonoBehaviour
             }
             else
             {
-                var randInt = Random.Range(0, leftObstacleTypes.Count);
+                var randInt = Random.Range(0, leftObstacleTypes2.Count);
                 
                 leftObstacle = leftObstacleTypes2[randInt];
                 leftObstaclePoint = leftObstaclePoints2[randInt];

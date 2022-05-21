@@ -158,6 +158,7 @@ public class GameController : MonoBehaviour
 
     private void GameEndedWithWinning()
     {
+        PlayerPrefs.SetInt("total_level",PlayerPrefs.GetInt("total_level") + 1);
         LevelIndex++;
     }
 
@@ -234,13 +235,13 @@ public class GameController : MonoBehaviour
     {
         
         //Wait for any intermediate obj
-        while (IsAnyIntermediateObjAlive)
+        /*while (IsAnyIntermediateObjAlive)
         {
             yield return null;
-        }
+        }*/
 
         //wait for growin animation
-        yield return new WaitForSeconds(Config.DurationOfAnimation + 1.0f);
+        yield return new WaitForSeconds(Config.DurationOfAnimation);
         
         //Camera Movement
         bool cameraMoved = false;

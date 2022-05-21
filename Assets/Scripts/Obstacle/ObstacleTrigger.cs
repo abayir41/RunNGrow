@@ -14,5 +14,8 @@ public class ObstacleTrigger : MonoBehaviour
         if (other.GetComponent<CharController>().IsCharacterGhostMode) return;
 
         GameActions.NormalObstacleColl?.Invoke(obstacleObject, other.GetComponent<CharController>());
+
+        if (!CompareTag("Destroyer"))
+            obstacleObject.gameObject.SetActive(false);
     }
 }

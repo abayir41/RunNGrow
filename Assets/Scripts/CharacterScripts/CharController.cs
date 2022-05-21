@@ -325,6 +325,7 @@ public class CharController : MonoBehaviour
 
         PointOfChar = resultAfterHit;
 
+        Debug.Log("obs: " + obstacle.name);
         if (x || y)
         {
             GetAnimCharToAPoint(0,0,0.5f);
@@ -340,6 +341,19 @@ public class CharController : MonoBehaviour
         else
         {
             GetAnimCharToAPoint(PointOfChar, 0.5f);
+        }
+
+        if (obstacle.CompareTag("Good"))
+        {
+            var effect = Instantiate(Resources.Load<GameObject>("1"));
+            effect.transform.position = upperBodyPoint.transform.position;
+            Destroy(effect, 2f);
+        }
+        if (obstacle.CompareTag("Bad"))
+        {
+            var effect = Instantiate(Resources.Load<GameObject>("0"));
+            effect.transform.position = upperBodyPoint.transform.position;
+            Destroy(effect, 2f);
         }
         
     }

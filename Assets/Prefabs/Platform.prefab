@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8685102075090730449}
   - component: {fileID: 4353546060469306373}
   - component: {fileID: 2754188492897108243}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: finalsceneTabela (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 6613565660675477812}
   - component: {fileID: 2432597897645182722}
   - component: {fileID: 6450468365937824248}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Circle.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,8 +143,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -8274133419916619345, guid: af8fa0870416e024db1fdfe166116b8d, type: 3}
-  - {fileID: 9185737683893222716, guid: af8fa0870416e024db1fdfe166116b8d, type: 3}
+  - {fileID: 2100000, guid: 7b38ac7e9040048f5b9f9a784db16413, type: 2}
+  - {fileID: 2100000, guid: d34053c9e65f041ec8643b038b4daac7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -175,7 +175,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2440811279813224163}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 714464214693697598}
   - component: {fileID: 842314066920588474}
   - component: {fileID: 533526241123894704}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}

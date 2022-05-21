@@ -42,6 +42,7 @@ public class UIController : MonoBehaviour
     
  
     [SerializeField] private UIElementController settingsButton;
+    public GameObject levelText;
 
     [SerializeField] private UIElementController bossEndScreenContinue;
 
@@ -161,6 +162,10 @@ public class UIController : MonoBehaviour
     {
         skinSelectOpenButton.CloseUI();
         settingsButton.CloseUI();
+        levelText.SetActive(true);
+        var curLevel = PlayerPrefs.GetInt("total_level") + 1;
+        levelText.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text =
+            "Level " + curLevel;
     }
 
     public void OpenSettings()

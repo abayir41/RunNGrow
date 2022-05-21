@@ -48,6 +48,7 @@ public class NormalObstacleObject : MonoBehaviour
                 leftArrow.Rotate(new Vector3(0,0,-90));
                 rightArrow.Rotate(new Vector3(0,0,-90));
                 text.text = "+" + prop.obstaclePoint;
+                normalObstacle.transform.parent.tag = "Good";
                 break;
             
             case NormalObstacleType.AddWeight:
@@ -57,6 +58,7 @@ public class NormalObstacleObject : MonoBehaviour
                 leftArrow.Rotate(new Vector3(0,0,0));
                 rightArrow.Rotate(new Vector3(0,0,180));
                 text.text = "+" + prop.obstaclePoint;
+                normalObstacle.transform.parent.tag = "Good";
                 break;
             
             case NormalObstacleType.DivideHeight:
@@ -66,6 +68,7 @@ public class NormalObstacleObject : MonoBehaviour
                 leftArrow.Rotate(new Vector3(0,0,90));
                 rightArrow.Rotate(new Vector3(0,0,90));
                 text.text = "÷" + prop.obstaclePoint;
+                normalObstacle.transform.parent.tag = "Bad";
                 break;
             
             case NormalObstacleType.DivideWeight:
@@ -75,6 +78,7 @@ public class NormalObstacleObject : MonoBehaviour
                 leftArrow.Rotate(new Vector3(0,0,180));
                 rightArrow.Rotate(new Vector3(0,0,0));
                 text.text = "÷" + prop.obstaclePoint;
+                normalObstacle.transform.parent.tag = "Bad";
                 break;
             
             case NormalObstacleType.ExtractHeight:
@@ -84,6 +88,7 @@ public class NormalObstacleObject : MonoBehaviour
                 leftArrow.Rotate(new Vector3(0,0,90));
                 rightArrow.Rotate(new Vector3(0,0,90));
                 text.text = "-" + prop.obstaclePoint;
+                normalObstacle.transform.parent.tag = "Bad";
                 break;
             
             case NormalObstacleType.ExtractWeight:
@@ -93,6 +98,7 @@ public class NormalObstacleObject : MonoBehaviour
                 leftArrow.Rotate(new Vector3(0,0,180));
                 rightArrow.Rotate(new Vector3(0,0,0));
                 text.text = "-" + prop.obstaclePoint;
+                normalObstacle.transform.parent.tag = "Bad";
                 break;
             
             case NormalObstacleType.MultiplyHeight:
@@ -102,6 +108,7 @@ public class NormalObstacleObject : MonoBehaviour
                 leftArrow.Rotate(new Vector3(0,0,-90));
                 rightArrow.Rotate(new Vector3(0,0,-90));
                 text.text = "X" + prop.obstaclePoint;
+                normalObstacle.transform.parent.tag = "Good";
                 break;
             
             case NormalObstacleType.MultiplyWeight:
@@ -111,10 +118,12 @@ public class NormalObstacleObject : MonoBehaviour
                 leftArrow.Rotate(new Vector3(0,0,0));
                 rightArrow.Rotate(new Vector3(0,0,180));
                 text.text = "X" + prop.obstaclePoint;
+                normalObstacle.transform.parent.tag = "Good";
                 break;
             
             case NormalObstacleType.Destroyer:
                 destroyer.SetActive(true);
+                destroyer.transform.parent.tag = "Bad";
                 for (int i = 0; i < quad.Length; i++)
                 {
                     quad[i].SetActive(false);
@@ -123,6 +132,7 @@ public class NormalObstacleObject : MonoBehaviour
             
             case NormalObstacleType.PartRemover:
                 partRemover.SetActive(true);
+                destroyer.transform.parent.tag = "Bad";
                 for (int i = 0; i < quad.Length; i++)
                 {
                     quad[i].SetActive(false);

@@ -6,11 +6,14 @@ TagManager:
   tags:
   - LeftObs
   - RightObs
+  - Destroyer
+  - Good
+  - Bad
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Stops
   - Water
   - UI
   - 
