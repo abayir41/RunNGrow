@@ -103,7 +103,7 @@ public class GameController : MonoBehaviour
         LeftSideVec = leftSide.position;
         RightSideVec = rightSide.position;
         MiddleSideVec = middleSide.position;
-        SpeedOfFinalPart = Config.SpeedOfFinalPart;
+        SpeedOfFinalPart = Config.SpeedOfObstacles;
 
         //List Cache
         CharactersDict = characters

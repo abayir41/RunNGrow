@@ -17,7 +17,7 @@ MonoBehaviour:
   delayMin: 0.03
   delayMax: 0.07
   startPoint: {x: 1, y: 1}
-  speedOfObstacles: 10
+  speedOfObstacles: 20
   cameraAnimDuration: 1
   distanceBetweenObstacle: 40
   distanceLastObstacleFinishPoint: 10
@@ -34,7 +34,7 @@ MonoBehaviour:
   maxWidth: 10
   maxHeight: 20
   throwAnimationSpeed: 5
-  ballPower: 1
+  ballPower: 3
   ballDuration: 0.3
   racketAnimation: 1
   distanceBetweenFinalAndLastObstacle: 16
