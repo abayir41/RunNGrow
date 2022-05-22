@@ -29,10 +29,10 @@ MonoBehaviour:
   minHeight: 0
   minScaleForDelay: 1
   maxScaleForDelay: 20
-  scalingAnimationDuration: 0.5
+  scalingAnimationDuration: 0.4
   colorChangeAnimDuration: 0.3
   maxWidth: 10
-  maxHeight: 15
+  maxHeight: 20
   throwAnimationSpeed: 5
   ballPower: 1
   ballDuration: 0.3

@@ -9,6 +9,7 @@ TagManager:
   - Destroyer
   - Good
   - Bad
+  - FinishLine
   layers:
   - Default
   - TransparentFX
