@@ -6,6 +6,7 @@ using System.Linq;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using MoreMountains.NiceVibrations;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -361,6 +362,9 @@ public class CharController : MonoBehaviour
 
         if (obstacle.CompareTag("Good"))
         {
+            SoundManager.PlaySpecificSound?.Invoke(SoundTypes.Good);
+            VibrationManager.VibrationSpecific?.Invoke(HapticTypes.MediumImpact);
+            
             var renderers = GetComponentsInChildren<Renderer>();
             renderers.ForEach(renderer1 =>
             {
@@ -383,6 +387,9 @@ public class CharController : MonoBehaviour
         }
         if (obstacle.CompareTag("Bad"))
         {
+            SoundManager.PlaySpecificSound?.Invoke(SoundTypes.Wrong);
+            VibrationManager.VibrationSpecific?.Invoke(HapticTypes.MediumImpact);
+            
             var renderers = GetComponentsInChildren<Renderer>();
             renderers.ForEach(renderer1 =>
             {

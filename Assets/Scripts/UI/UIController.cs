@@ -74,7 +74,9 @@ public class UIController : MonoBehaviour
         deathScreen.CloseUI();
 
         bossEndScreenContinue.FadeOut();
-        
+
+        vibrationImage.sprite = PlayerPrefs.GetInt("Vibration") == 0 ? vibrationEnable : vibrationDisable;
+        soundImage.sprite = PlayerPrefs.GetInt("Sound") == 0 ? soundEnable : soundDisable;
         
         skinSelectMenu.CloseUI();
     }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.2619252, g: 0.570104, b: 0.9943475, a: 1}
+  m_IndirectSpecularColor: {r: 0.26313254, g: 0.5704985, b: 0.9943171, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -9774,7 +9774,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 47dcfff609dd89a4f9fe3db804083472, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8ffd632cccdd3214a9ba5eb436fcf7ce, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13023,14 +13023,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f2c11389488cdc64f9acc5ac8ee0cda4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 80c1e2000f18efb429a2e0409ce15298, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -22460,6 +22460,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -22565,6 +22566,102 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!82 &963194230
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &963493852
 GameObject:
   m_ObjectHideFlags: 0
@@ -25085,11 +25182,11 @@ MonoBehaviour:
   rightObstacleTypes: 0400000000000000040000000400000000000000040000000200000000000000010000000000000005000000
   rightObstaclePoints: 0400000006000000050000000500000003000000040000000200000005000000060000000400000008000000
   leftObstacleTypes2: 0100000000000000050000000800000000000000030000000000000000000000070000000800000009000000
-  leftObstaclePoints2: 0500000005000000040000000000000003000000020000000500000003000000020000000000000000000000
+  leftObstaclePoints2: 0500000005000000040000000000000003000000020000000500000003000000020000000000000002000000
   rightObstacleTypes2: 0000000001000000040000000600000005000000000000000300000007000000000000000900000009000000
-  rightObstaclePoints2: 0500000005000000060000000200000004000000050000000200000002000000050000000000000000000000
+  rightObstaclePoints2: 0500000005000000060000000200000004000000050000000200000002000000050000000200000002000000
   leftObstacleTypes3: 0800000009000000
-  leftObstaclePoints3: 0000000000000000
+  leftObstaclePoints3: 0000000002000000
   rightObstacleTypes3: 0300000008000000
   rightObstaclePoints3: 0200000000000000
 --- !u!4 &1089883204
@@ -50061,6 +50158,8 @@ GameObject:
   - component: {fileID: 2085130747}
   - component: {fileID: 2085130748}
   - component: {fileID: 2085130750}
+  - component: {fileID: 2085130752}
+  - component: {fileID: 2085130751}
   m_Layer: 0
   m_Name: Controllers
   m_TagString: Untagged
@@ -50207,10 +50306,10 @@ MonoBehaviour:
   bossEndScreenContinue: {fileID: 699411698}
   soundImage: {fileID: 396792166}
   vibrationImage: {fileID: 565582172}
-  soundEnable: {fileID: 21300000, guid: 47dcfff609dd89a4f9fe3db804083472, type: 3}
-  soundDisable: {fileID: 21300000, guid: d438d7dfdc9501b4db48485eba0a4ef3, type: 3}
-  vibrationEnable: {fileID: 21300000, guid: f2c11389488cdc64f9acc5ac8ee0cda4, type: 3}
-  vibrationDisable: {fileID: 21300000, guid: 0e78ecc4fde7f5e49bbd1d0531cd5f77, type: 3}
+  soundEnable: {fileID: 21300000, guid: 8ffd632cccdd3214a9ba5eb436fcf7ce, type: 3}
+  soundDisable: {fileID: 21300000, guid: 7d3656a8c89910645b57a677eac0352a, type: 3}
+  vibrationEnable: {fileID: 21300000, guid: 80c1e2000f18efb429a2e0409ce15298, type: 3}
+  vibrationDisable: {fileID: 21300000, guid: c7623f5731481144389383403a897cde, type: 3}
 --- !u!114 &2085130749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50244,6 +50343,36 @@ MonoBehaviour:
   distanceElement2: {fileID: 2335670975570061540}
   diffBetweenMultiplier: 0.2
   finalPlatforms: []
+  finishLine: {fileID: 7492612180477137250}
+--- !u!114 &2085130751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085130741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33b8dbe2ad68165488a2238765b11394, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2085130752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085130741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5147b4a090725e5458aca04969c75ebb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 963194230}
+  good: {fileID: 8300000, guid: fe9fd7453d6b14ed7a6601dba774a4dd, type: 3}
+  wrong: {fileID: 8300000, guid: 1cd2d4eb9f6634bf6bcc6942f837fe82, type: 3}
+  lose: {fileID: 8300000, guid: 85880356c5eb54d68957c3e434101dd2, type: 3}
+  win: {fileID: 8300000, guid: c1ee2907b4f204fa8b7492e2d89c5791, type: 3}
 --- !u!1 &2087611895
 GameObject:
   m_ObjectHideFlags: 0

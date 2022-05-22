@@ -27,6 +27,8 @@ public class FinalPartController : MonoBehaviour
     [SerializeField] private float diffBetweenMultiplier;
 
     public List<FinalPlatform> finalPlatforms;
+    
+    public GameObject finishLine;
      private void Awake()
     {
         Instance = this;

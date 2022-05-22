@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using MoreMountains.NiceVibrations;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using TMPro;
@@ -187,6 +188,8 @@ public class GameController : MonoBehaviour
         {
             gameFailed = true;
             UIControl.OpenDeathScreen();
+            SoundManager.PlaySpecificSound?.Invoke(SoundTypes.Lose);
+            VibrationManager.VibrationSpecific?.Invoke(HapticTypes.Failure);
             GameActions.GameFailed?.Invoke();
         }
     
@@ -204,6 +207,7 @@ public class GameController : MonoBehaviour
                     if(_currentIntermediateObjectSpawner != null)
                         StopCoroutine(_currentIntermediateObjectSpawner);
 
+                    FinalController.finishLine.SetActive(false);
                     SpeedOfFinalPart = 0;
                     
                     StartCoroutine(StartEndAnimation());
@@ -294,6 +298,8 @@ public class GameController : MonoBehaviour
         //Boss Die
 
         //stop the movement of last part
+        SoundManager.PlaySpecificSound?.Invoke(SoundTypes.Win);
+        VibrationManager.VibrationSpecific?.Invoke(HapticTypes.Success);
         SpeedOfFinalPart = 0;
         FinalPlatform finalPlatform;
         if (FinalController.finalPlatforms.Any(platform => !platform.gotHit))
@@ -307,12 +313,8 @@ public class GameController : MonoBehaviour
         finalPlatform.gameObject.transform.DOScale(finalPlatform.gameObject.transform.localScale * 1.1f, 1).SetLoops(-1, LoopType.Yoyo);
         var addPoint = (int) (_gameTotalPoints * finalPlatform.multiplier);
         //duration of Die
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
-        
-        
-        
-        
         UIControl.OpenGameScorePart();
         
         float tempCoinText = MoneySystem.TotalPoints;

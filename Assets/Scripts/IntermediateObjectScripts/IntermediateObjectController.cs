@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using MoreMountains.NiceVibrations;
 
 public class IntermediateObjectController : MonoBehaviour
 {
@@ -95,10 +96,14 @@ public class IntermediateObjectController : MonoBehaviour
         var animZ = objTransform.DOMoveZ(endPos.z, duration).SetEase(Ease.Linear);
 
         var anims = new TweenObjectAnims(animX, animYp1, animYp2, animZ);
+        
+        VibrationManager.VibrationSpecific?.Invoke(HapticTypes.LightImpact);
+        
         //Save/discard Anim
         _intermediateObjectsMoveAnims.Add(anims);
         anims.SetOnComplete(() =>
         {
+            VibrationManager.VibrationSpecific?.Invoke(HapticTypes.LightImpact);
             _intermediateObjectsMoveAnims.Remove(anims);
             IntermediateObjectActions.IntermediateObjectArrivedSuccessfully?.Invoke(size, obj, goingTo);
         });
@@ -124,9 +129,11 @@ public class IntermediateObjectController : MonoBehaviour
         var anims = new TweenObjectAnims(null, null, null, null);
 
         _intermediateObjectsMoveAnims.Add(anims);
+        VibrationManager.VibrationSpecific?.Invoke(HapticTypes.LightImpact);
         
         sc.Action += () =>
         {
+            VibrationManager.VibrationSpecific?.Invoke(HapticTypes.LightImpact);
             _intermediateObjectsMoveAnims.Remove(anims);
             IntermediateObjectActions.IntermediateObjectFinalPlatformArrivedSuccessfully?.Invoke(size, obj, platform);
         };

@@ -18,6 +18,8 @@ public class FinalPlatform : MonoBehaviour
 
     public Color colorfulItemColor;
 
+   
+
     private void Awake()
     {
         _cachedRacketDiff = racket.transform.position - transform.position;
