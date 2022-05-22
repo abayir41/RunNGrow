@@ -17,7 +17,7 @@ MonoBehaviour:
   delayMin: 0.03
   delayMax: 0.07
   startPoint: {x: 1, y: 1}
-  speedOfObstacles: 20
+  speedOfObstacles: 15
   cameraAnimDuration: 1
   distanceBetweenObstacle: 40
   distanceLastObstacleFinishPoint: 10
