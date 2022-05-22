@@ -7,32 +7,21 @@ public class IntermediateObject : MonoBehaviour
 {
     
     public Action Action;
-    public Transform target;
-    public float speed;
-    public bool objectArrived;
 
-    private void OnTriggerEnter(Collider other)
+
+    public IEnumerator MoveToPosition(Transform target1, float timeToMove)
     {
-        if (other.GetComponent<CharController>() == null)
+        var startPos = transform.position;
+        var t = 0f;
+        while (t < timeToMove)
         {
-            Action?.Invoke();
+            t += Time.deltaTime;
+            transform.position = Vector3.Lerp(startPos, target1.position, t / timeToMove);
+            yield return null;
         }
-    }
-
-    private void Update()
-    {
-        if (target == null) return;
-        if(objectArrived) return;
-
-        var step =  speed * Time.deltaTime; // calculate distance to move
-        transform.position = Vector3.MoveTowards(transform.position, target.position, step);
-
-        // Check if the position of the cube and sphere are approximately equal.
-        if (Vector3.Distance(transform.position, target.position) < 0.001f)
-        {
-            objectArrived = true;
-            // Swap the position of the cylinder.
-            Action?.Invoke();
-        }
+        
+        
+        Action?.Invoke();
+        
     }
 }

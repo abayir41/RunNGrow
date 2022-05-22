@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 
@@ -10,12 +11,14 @@ public class FinalPartController : MonoBehaviour
     public static FinalPartController Instance { get; private set; }
     
     [SerializeField] private Transform lastWall;
-    [SerializeField] private Transform finalPlatformParent;
+    [SerializeField] public Transform finalPlatformParent;
     [SerializeField] private Transform finalPlatformStart;
     [SerializeField] private GameObject platformObj;
     
     [SerializeField] private int amountOfPlatform;
 
+
+      
     private float _distance;
     [SerializeField] private Transform distanceElement1;
     [SerializeField] private Transform distanceElement2;
@@ -87,11 +90,14 @@ public class FinalPartController : MonoBehaviour
             var multiplierBlock = _multiplierBlocks[i];
             var color = Color.HSVToRGB(step, 1, 1);
             matBlock.SetColor("_BaseColor", color);
-            multiplierBlock.GetComponent<Renderer>().SetPropertyBlock(matBlock);
+            finalPlatforms[i].colorfulItems.ForEach(renderer1 => renderer1.SetPropertyBlock(matBlock));
+
+            finalPlatforms[i].colorfulItemColor = color;
+            
             step += 1.0f / _multiplierBlocks.Count;
 
             //Make one decimal
-            multiplierBlock.GetComponentInChildren<TextMeshPro>().text = $"{_multiplierBlocks[i].GetComponent<FinalPlatform>().multiplier:0.0}" + "X";
+            multiplierBlock.GetComponentsInChildren<TextMeshPro>().ForEach(pro => pro.text = $"{_multiplierBlocks[i].GetComponent<FinalPlatform>().multiplier:0.0}" + "X");
         }
         
         

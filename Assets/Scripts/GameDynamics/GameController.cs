@@ -49,8 +49,7 @@ public class GameController : MonoBehaviour
         {Side.Right, CharacterControllers[Side.Right].IsCharacterGhostMode}
     };
     #endregion
-
-    [SerializeField] private List<MapConfig> maps;
+    
     [SerializeField] private Transform leftSide;
     [SerializeField] private Transform rightSide;
     [SerializeField] private Transform middleSide;
@@ -68,10 +67,7 @@ public class GameController : MonoBehaviour
     private bool _gameFinishAnimationStarted;
     public bool gameFailed;
     
-    //Animations
-    private static readonly int RunBack = Animator.StringToHash("RunBack");
     private static readonly int SpeedOfThrow = Animator.StringToHash("SpeedOfThrow");
-    private static readonly int Die = Animator.StringToHash("Die");
 
 
     [HorizontalGroup("Base")] [BoxGroup("Base/Left")]
@@ -83,6 +79,9 @@ public class GameController : MonoBehaviour
     private float _gameTotalPoints;
     private bool _bossHitTheWall;
     public bool gameStarted;
+
+    public Transform pathLastPoint;
+    public Transform finalPartStartPoint;
 
     [Button]
     public void RemovePlayerCache()
@@ -133,6 +132,11 @@ public class GameController : MonoBehaviour
         var map = MapKeeper.Instance.GetMap();
         OController.SpawnMapObstacles(map);
         FinalController.InstantiateFinalPart();
+
+        var position = pathLastPoint.position;
+        var position1 = finalPartStartPoint.position;
+        leftSide.position -= new Vector3((position - position1).x,0,0);
+        rightSide.position -= new Vector3((position - position1).x,0,0);
 
 
         DOTween.SetTweensCapacity(1000,50);
@@ -379,7 +383,7 @@ public class GameController : MonoBehaviour
         if(_platformIndex == FinalController.finalPlatforms.Count - 1)
             BossHitTheMax();
         //the parametre Side Middle Doesnt important
-        CharacterControllers[Side.Middle].TransferOneToPos(FinalController.finalPlatforms[_platformIndex], config.BallSpeed, config.BallPower);
+        CharacterControllers[Side.Middle].TransferOneToPos(FinalController.finalPlatforms[_platformIndex], config.BallDuration, config.BallPower);
         _platformIndex++;
     }
 

@@ -55,6 +55,7 @@ public class GameConfig : ScriptableObject
     public float MinScaleForDelay => minScaleForDelay;
     public float MaxScaleForDelay => maxScaleForDelay;
     public float ScalingAnimationDuration => scalingAnimationDuration;
+    public float ColorChangeAnimDuration => colorChangeAnimDuration;
      
     [Header("Character Configurations")]
     [SerializeField] private float widthScalingCoefficient;
@@ -64,20 +65,21 @@ public class GameConfig : ScriptableObject
     [SerializeField] private float minScaleForDelay;
     [SerializeField] private float maxScaleForDelay;
     [SerializeField] private float scalingAnimationDuration;
+    [SerializeField] private float colorChangeAnimDuration;
     
     
     //-------------------------------
     //Middle Character Configurations
     //-------------------------------
     public float ThrowAnimationSpeed => throwAnimationSpeed;
-    public float BallSpeed => ballSpeed;
+    public float BallDuration => ballDuration;
     public int BallPower => ballPower;
     public float RacketAnimation => racketAnimation;
     
     [Header("MiddleChar Configurations")] 
     [SerializeField] private float throwAnimationSpeed;
     [SerializeField] private int ballPower;
-    [SerializeField] private float ballSpeed;
+    [SerializeField] private float ballDuration;
     [SerializeField] private float racketAnimation;
  
     
@@ -86,10 +88,14 @@ public class GameConfig : ScriptableObject
     //-------------------------------
     public float DistanceBetweenFinalAndLastObstacle => distanceBetweenFinalAndLastObstacle;
     public float SpeedOfFinalPart => speedOfFinalPart;
+    public float GoingWhiteAnimDuration => goingWhiteAnimDuration;
+    public float GoingGreenAnimDuration => goingGreenAnimDuration;
     
     [Header("Final Configurations")]
     [SerializeField] private float distanceBetweenFinalAndLastObstacle;
     [SerializeField] private float speedOfFinalPart;
+    [SerializeField] private float goingWhiteAnimDuration;
+    [SerializeField] private float goingGreenAnimDuration;
     
     //-------------------------------
     //UI Configurations

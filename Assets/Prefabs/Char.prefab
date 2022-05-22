@@ -2554,6 +2554,7 @@ MonoBehaviour:
   cylinderUpPoint: {fileID: 2782999945117171531}
   upperBodyMovePoint: {fileID: 7680006443457151739}
   upperBodyMoveVector: {x: 0.38175106, y: 0.92193896, z: -0.06553362}
+  charColor: {r: 0, g: 0.60784316, b: 1, a: 1}
 --- !u!65 &7680006441636755893
 BoxCollider:
   m_ObjectHideFlags: 0

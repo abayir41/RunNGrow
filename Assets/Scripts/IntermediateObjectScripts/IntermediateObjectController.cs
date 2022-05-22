@@ -108,7 +108,7 @@ public class IntermediateObjectController : MonoBehaviour
         _activeObjects.Add(obj);
     }
     
-    public void MoveIntermediateObject(Vector3 startPos, Transform endPos, float speed, FinalPlatform platform, Vector2 size)
+    public void MoveIntermediateObject(Vector3 startPos, Transform endPos, float duration, FinalPlatform platform, Vector2 size)
     {
         var obj = GetObject();
         
@@ -120,9 +120,6 @@ public class IntermediateObjectController : MonoBehaviour
         
 
         var sc = obj.GetComponent<IntermediateObject>();
-        sc.speed = speed;
-        sc.target = endPos;
-        sc.objectArrived = false;
 
         var anims = new TweenObjectAnims(null, null, null, null);
 
@@ -134,6 +131,7 @@ public class IntermediateObjectController : MonoBehaviour
             IntermediateObjectActions.IntermediateObjectFinalPlatformArrivedSuccessfully?.Invoke(size, obj, platform);
         };
         
+        StartCoroutine(sc.MoveToPosition(endPos, duration));
         
         //remove from pool, add actives
         _objectsInPool.Remove(obj);

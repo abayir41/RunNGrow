@@ -30,12 +30,15 @@ MonoBehaviour:
   minScaleForDelay: 1
   maxScaleForDelay: 20
   scalingAnimationDuration: 0.5
-  throwAnimationSpeed: 3
-  ballPower: 5
-  ballSpeed: 10
+  colorChangeAnimDuration: 0.3
+  throwAnimationSpeed: 5
+  ballPower: 1
+  ballDuration: 0.3
   racketAnimation: 1
   distanceBetweenFinalAndLastObstacle: 16
   speedOfFinalPart: 10
+  goingWhiteAnimDuration: 0.2
+  goingGreenAnimDuration: 0.5
   uiMoveAnimationDuration: 3
   uiFadeOutAnimationDuration: 1
   uiFadeLoopAnimationDuration: 1.6

@@ -53,6 +53,8 @@ public class CharController : MonoBehaviour
     private List<Animator> _animators;
     private static readonly int Started = Animator.StringToHash("GameStarted");
 
+    [SerializeField] private Color charColor;
+
     [Button]
     private void CalculateUpperBodyMoveVector()
     {
@@ -324,8 +326,7 @@ public class CharController : MonoBehaviour
         var y = resultAfterHit.y < 0;
 
         PointOfChar = resultAfterHit;
-
-        Debug.Log("obs: " + obstacle.name);
+        
         if (x || y)
         {
             GetAnimCharToAPoint(0,0,0.5f);
@@ -345,12 +346,45 @@ public class CharController : MonoBehaviour
 
         if (obstacle.CompareTag("Good"))
         {
+            var renderers = GetComponentsInChildren<Renderer>();
+            renderers.ForEach(renderer1 =>
+            {
+
+                var temp = charColor;
+
+                DOTween.To(() => temp, value =>
+                {
+                    temp = value;
+                    var matBlock = new MaterialPropertyBlock();
+                    matBlock.SetColor("_BaseColor", value);
+                    renderer1.SetPropertyBlock(matBlock);
+                }, Color.green, GameController.Config.ColorChangeAnimDuration).SetLoops(2, LoopType.Yoyo);
+
+            });
+            
             var effect = Instantiate(Resources.Load<GameObject>("1"));
             effect.transform.position = upperBodyPoint.transform.position;
             Destroy(effect, 2f);
         }
         if (obstacle.CompareTag("Bad"))
         {
+            var renderers = GetComponentsInChildren<Renderer>();
+            renderers.ForEach(renderer1 =>
+            {
+
+                var temp = charColor;
+
+                DOTween.To(() => temp, value =>
+                {
+                    temp = value;
+                    var matBlock = new MaterialPropertyBlock();
+                    matBlock.SetColor("_BaseColor", value);
+                    renderer1.SetPropertyBlock(matBlock);
+                }, Color.red, GameController.Config.ColorChangeAnimDuration).SetLoops(2, LoopType.Yoyo);
+
+            });
+            
+            
             var effect = Instantiate(Resources.Load<GameObject>("0"));
             effect.transform.position = upperBodyPoint.transform.position;
             Destroy(effect, 2f);
