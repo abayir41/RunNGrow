@@ -238,24 +238,18 @@ public class GameController : MonoBehaviour
     private IEnumerator StartEndAnimation()
     {
         
-        //Wait for any intermediate obj
-        /*while (IsAnyIntermediateObjAlive)
-        {
-            yield return null;
-        }*/
-
-        //wait for growin animation
-        yield return new WaitForSeconds(Config.DurationOfAnimation);
-        
-        //Camera Movement
         bool cameraMoved = false;
         cameraTransform.DOMove(cameraSideView.position, Config.CameraAnimDuration).OnComplete(() => cameraMoved = true);
         cameraTransform.DORotateQuaternion(cameraSideView.rotation, Config.CameraAnimDuration);
-
-        while (!cameraMoved)
+        
+        //Wait for any intermediate obj
+        while (IsAnyIntermediateObjAlive)
         {
             yield return null;
         }
+
+        //wait for growin animation
+        
 
         //CalculateGame Points
         _gameTotalPoints += CharacterControllers[Side.Left].PointOfChar.x +
@@ -269,7 +263,7 @@ public class GameController : MonoBehaviour
         StartCoroutine(CharacterControllers[Side.Right].StartTransfer(Side.Middle));
 
         //wait for intermedie objs
-        while (LeftAndRightCanShrink.Any(pair => pair.Value != true) || IsAnyIntermediateObjAlive)
+        while (LeftAndRightCanShrink.Any(pair => pair.Value != true) || IsAnyIntermediateObjAlive || !cameraMoved)
         {
             yield return null;
         }
@@ -284,10 +278,18 @@ public class GameController : MonoBehaviour
         
         
         //set throwing ball speed while throwing
+
+        while (!(CharacterControllers[Side.Middle].IsCharacterGhostMode || !IsAnyIntermediateObjAlive && _bossHitTheWall))
+        {
+            yield return null;
+        }
+        
+        /*
         while ((!CharacterControllers[Side.Middle].IsCharacterGhostMode || IsAnyIntermediateObjAlive) && !_bossHitTheWall)
         {
             yield return null;
         }
+        */
         
         //Boss Die
 

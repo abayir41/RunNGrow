@@ -56,6 +56,8 @@ public class GameConfig : ScriptableObject
     public float MaxScaleForDelay => maxScaleForDelay;
     public float ScalingAnimationDuration => scalingAnimationDuration;
     public float ColorChangeAnimDuration => colorChangeAnimDuration;
+    public float MaxWidth => maxWidth;
+    public float MaxHeight => maxHeight;
      
     [Header("Character Configurations")]
     [SerializeField] private float widthScalingCoefficient;
@@ -66,6 +68,8 @@ public class GameConfig : ScriptableObject
     [SerializeField] private float maxScaleForDelay;
     [SerializeField] private float scalingAnimationDuration;
     [SerializeField] private float colorChangeAnimDuration;
+    [SerializeField] private float maxWidth;
+    [SerializeField] private float maxHeight;
     
     
     //-------------------------------

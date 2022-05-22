@@ -49,9 +49,9 @@ public class FinalPartController : MonoBehaviour
             _multiplierBlocks.Add(platform);
             
             platform.GetComponent<FinalPlatform>().multiplier = 1 + i * diffBetweenMultiplier;
-            
+
             platform.GetComponent<FinalPlatform>().racket.transform.localScale *=
-                1 + i * diffBetweenMultiplier > 2 ? 2 : 1 + i * diffBetweenMultiplier;
+                Utilities.ConvertFloatToInterval(i, 0, amountOfPlatform, 1, 2);
             platform.GetComponent<FinalPlatform>().pos = platform.GetComponent<FinalPlatform>().racket.transform.GetChild(0);
 
 

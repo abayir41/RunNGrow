@@ -54,6 +54,8 @@ public class CharController : MonoBehaviour
     private static readonly int Started = Animator.StringToHash("GameStarted");
 
     [SerializeField] private Color charColor;
+    [SerializeField] private GameObject bodyPartRef;
+    [SerializeField] private GameObject bodyPartPrefab;
 
     [Button]
     private void CalculateUpperBodyMoveVector()
@@ -168,6 +170,8 @@ public class CharController : MonoBehaviour
         }
         else
         {
+            
+            
             GetAnimCharToAPoint(PointOfChar, Config.ScalingAnimationDuration);
         }
     }
@@ -329,7 +333,7 @@ public class CharController : MonoBehaviour
         
         if (x || y)
         {
-            GetAnimCharToAPoint(0,0,0.5f);
+            GetAnimCharToAPoint(0,0,Config.ScalingAnimationDuration);
 
             PointOfChar = Vector2.zero;
             
@@ -337,11 +341,22 @@ public class CharController : MonoBehaviour
             
         }else if (obstacle.Type == NormalObstacleType.PartRemover)
         {
-            GetAnimCharToAPoint(PointOfChar, 0.5f);
+            var part = Instantiate(bodyPartPrefab);
+            var localScale = bodyPartRef.transform.lossyScale;
+            part.transform.position = bodyPartRef.transform.position;
+            part.transform.rotation = bodyPartRef.transform.rotation;
+            localScale = new Vector3(localScale.x, (float) (localScale.y * 0.5), localScale.z);
+            part.transform.localScale = localScale;
+            
+            var rigid = part.GetComponent<Rigidbody>();
+            rigid.AddForce(-400,200,0);
+            rigid.AddTorque(250,150,140);
+
+            GetAnimCharToAPoint(PointOfChar, Config.ScalingAnimationDuration);
         }
         else
         {
-            GetAnimCharToAPoint(PointOfChar, 0.5f);
+            GetAnimCharToAPoint(PointOfChar, Config.ScalingAnimationDuration);
         }
 
         if (obstacle.CompareTag("Good"))
@@ -395,6 +410,9 @@ public class CharController : MonoBehaviour
     private List<TweenerCore<Vector3,Vector3,VectorOptions>> GetAnimCharToAPoint(float width, float height, float duration)
     {
         var anims = new List<TweenerCore<Vector3, Vector3, VectorOptions>>();
+
+        width = width > Config.MaxWidth ? Config.MaxWidth : width;
+        height = height > Config.MaxHeight ? Config.MaxHeight : height;
         
         _transformsOfParts.ForEach(pair =>
         {
@@ -411,6 +429,9 @@ public class CharController : MonoBehaviour
     private List<TweenerCore<Vector3,Vector3,VectorOptions>> GetAnimCharToAPoint(Vector2 sizeVector, float duration)
     {
         var anims = new List<TweenerCore<Vector3, Vector3, VectorOptions>>();
+        
+        sizeVector.x = sizeVector.x > Config.MaxWidth ? Config.MaxWidth : sizeVector.x;
+        sizeVector.y = sizeVector.y > Config.MaxHeight ? Config.MaxHeight : sizeVector.y;
         
         _transformsOfParts.ForEach(pair =>
         {

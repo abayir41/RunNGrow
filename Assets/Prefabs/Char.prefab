@@ -2555,6 +2555,8 @@ MonoBehaviour:
   upperBodyMovePoint: {fileID: 7680006443457151739}
   upperBodyMoveVector: {x: 0.38175106, y: 0.92193896, z: -0.06553362}
   charColor: {r: 0, g: 0.60784316, b: 1, a: 1}
+  bodyPartRef: {fileID: 4769555818846506166}
+  bodyPartPrefab: {fileID: 8190241469799205506, guid: f455ca1d05e04e640a225c991381c9ec, type: 3}
 --- !u!65 &7680006441636755893
 BoxCollider:
   m_ObjectHideFlags: 0

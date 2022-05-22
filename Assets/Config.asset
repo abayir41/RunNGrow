@@ -18,7 +18,7 @@ MonoBehaviour:
   delayMax: 0.07
   startPoint: {x: 1, y: 1}
   speedOfObstacles: 10
-  cameraAnimDuration: 0.3
+  cameraAnimDuration: 1
   distanceBetweenObstacle: 40
   distanceLastObstacleFinishPoint: 10
   redColor: {fileID: 2100000, guid: 8de038faf9a0340d9b43bdb70fa8e53b, type: 2}
@@ -31,6 +31,8 @@ MonoBehaviour:
   maxScaleForDelay: 20
   scalingAnimationDuration: 0.5
   colorChangeAnimDuration: 0.3
+  maxWidth: 10
+  maxHeight: 15
   throwAnimationSpeed: 5
   ballPower: 1
   ballDuration: 0.3

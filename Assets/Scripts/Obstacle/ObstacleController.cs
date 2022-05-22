@@ -63,6 +63,14 @@ public class ObstacleController : MonoBehaviour
         GameActions.GameStarted += GameStarted;
         GameActions.GameFailed += GameFailed;
         GameActions.GameFinishAnimationStarted += GameFinishAnimationStarted;
+        GameActions.BossRunningStarted += BossRunningStarted;
+        GameActions.GameEndedWithWinning += GameEndedWithWinning;
+    }
+
+    private bool _bossRunning;
+    private void BossRunningStarted()
+    {
+        _bossRunning = true;
     }
 
     private void GameFinishAnimationStarted()
@@ -76,6 +84,14 @@ public class ObstacleController : MonoBehaviour
         GameActions.GameStarted -= GameStarted;
         GameActions.GameFailed -= GameFailed;
         GameActions.GameFinishAnimationStarted -= GameFinishAnimationStarted;
+        GameActions.BossRunningStarted -= BossRunningStarted;
+        GameActions.GameEndedWithWinning -= GameEndedWithWinning;
+    }
+
+    private bool _gameEnded;
+    private void GameEndedWithWinning()
+    {
+        _gameEnded = true;
     }
 
     private void GameStarted()
@@ -93,8 +109,8 @@ public class ObstacleController : MonoBehaviour
     {
         if(!_gameStarted) return;
         if(_gameFailed) return;
-        if(_gameFinishedAnimStarted) return;
-        ;
+        if(_gameFinishedAnimStarted && !_bossRunning) return;
+        if(_gameEnded) return;
 
         var along = Controller.MapAlongAxis switch
         {
