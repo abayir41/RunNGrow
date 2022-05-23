@@ -103,6 +103,11 @@ public enum UIAnimationTypes
     FadeLoop = 32
 }
 
-
+public enum DirectionOfIntermediateObj
+{
+    Right,
+    Left,
+    Null
+}
 
 

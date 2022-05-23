@@ -61,9 +61,9 @@ public class GameController : MonoBehaviour
     private Vector3 RightSideVec { get; set; }
     public Vector3 MiddleSideVec { get; set; }
 
-    private Coroutine _currentIntermediateObjectSpawner;
-    private Side _sideOfCurrentIntermediateObjectsGoing;
-    
+    private Coroutine _intermediateObjectSpawner;
+    private bool _coroutineStopped;
+
     private bool IsAnyIntermediateObjAlive => IOCInstance.IsThereAnyIntermediateObjectMoving();
     private bool _gameFinishAnimationStarted;
     public bool gameFailed;
@@ -83,6 +83,9 @@ public class GameController : MonoBehaviour
 
     public Transform pathLastPoint;
     public Transform finalPartStartPoint;
+
+    private float _cachedTouchX;
+    public static DirectionOfIntermediateObj Direction;
 
     [Button]
     public void RemovePlayerCache()
@@ -204,8 +207,12 @@ public class GameController : MonoBehaviour
                 if (lastObjPos.x + config.DistanceLastObstacleFinishPoint < CharacterTransforms[Side.Left].position.x)
                 {
                     _gameFinishAnimationStarted = true;
-                    if(_currentIntermediateObjectSpawner != null)
-                        StopCoroutine(_currentIntermediateObjectSpawner);
+                    if (_intermediateObjectSpawner != null)
+                    {
+                        StopCoroutine(_intermediateObjectSpawner);
+                        _coroutineStopped = true;
+                    }
+                        
 
                     FinalController.finishLine.SetActive(false);
                     SpeedOfFinalPart = 0;
@@ -227,12 +234,70 @@ public class GameController : MonoBehaviour
             if (touch.phase == TouchPhase.Began)
             {
                 var touchPos = touch.position;
-                ScreenTouched(touchPos.x > (float) Screen.width / 2 ? Side.Right : Side.Left);
+                _cachedTouchX = touchPos.x;
+                //ScreenTouched(touchPos.x > (float) Screen.width / 2 ? Side.Right : Side.Left);
+            }
+            else if (touch.phase == TouchPhase.Moved)
+            {
+                var touchPos = touch.position;
+
+                DirectionOfIntermediateObj currDirect;
+
+                if (touchPos.x > _cachedTouchX)
+                {
+                    currDirect = DirectionOfIntermediateObj.Right;
+                }
+                else if (touchPos.x < _cachedTouchX)
+                {
+                    currDirect = DirectionOfIntermediateObj.Left;
+                }
+                else
+                {
+                    currDirect = DirectionOfIntermediateObj.Null;
+                }
+
+                
+                
+                if (Direction != currDirect || _coroutineStopped)
+                {
+                    if (_intermediateObjectSpawner != null)
+                    {
+                        StopCoroutine(_intermediateObjectSpawner);
+                        _coroutineStopped = true;
+                    }
+                        
+
+                    Debug.Log(currDirect);
+                    
+                    switch (currDirect)
+                    {
+                        case DirectionOfIntermediateObj.Right:
+                            ScreenTouched(Side.Left);
+                            break;
+                        case DirectionOfIntermediateObj.Left:
+                            ScreenTouched(Side.Right);
+                            break;
+                        case DirectionOfIntermediateObj.Null:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    Direction = currDirect;
+                }
+                
+               
+                
             }
             else if (touch.phase == TouchPhase.Ended)
             {
-                if(_currentIntermediateObjectSpawner != null)
-                    StopCoroutine(_currentIntermediateObjectSpawner);
+                if (_intermediateObjectSpawner != null)
+                {
+                    StopCoroutine(_intermediateObjectSpawner);
+                    _coroutineStopped = true;
+                }
+                
+                Direction = DirectionOfIntermediateObj.Null;
             }
         }
         
@@ -405,12 +470,14 @@ public class GameController : MonoBehaviour
     {
         var goingTo = Utilities.GetOtherSide(side);
         
-        if (IOCInstance.IsThereAnyIntermediateObjectMoving() && goingTo != _sideOfCurrentIntermediateObjectsGoing) return;
+        //if (IOCInstance.IsThereAnyIntermediateObjectMoving() && goingTo != _sideOfCurrentIntermediateObjectsGoing) return;
         if(CharacterControllers[side].IsCharacterGhostMode) return;
 
+  
+
         
-        _sideOfCurrentIntermediateObjectsGoing = goingTo;
-        _currentIntermediateObjectSpawner = StartCoroutine(CharacterControllers[side].StartTransfer(goingTo));
+        _intermediateObjectSpawner = StartCoroutine(CharacterControllers[side].StartTransfer(goingTo));
+        _coroutineStopped = false;
     }
     
 }

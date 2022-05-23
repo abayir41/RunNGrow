@@ -330,8 +330,7 @@ public class CharController : MonoBehaviour
         
         if (x || y)
         {
-            Debug.Log(SideOfChar + ": " + cache+ "To "+Vector2.zero);
-            
+
             GetAnimCharToAPoint(0,0,Config.ScalingAnimationDuration);
 
             PointOfChar = Vector2.zero;
@@ -340,8 +339,7 @@ public class CharController : MonoBehaviour
             
         }else if (obstacle.Type == NormalObstacleType.PartRemover)
         {
-            Debug.Log(SideOfChar + ": " + cache+ "To "+PointOfChar);
-            
+
             var part = Instantiate(bodyPartPrefab);
             var localScale = bodyPartRef.transform.lossyScale;
             part.transform.position = bodyPartRef.transform.position;
@@ -357,7 +355,6 @@ public class CharController : MonoBehaviour
         }
         else
         {
-            Debug.Log(SideOfChar + ": " + cache+ "To "+PointOfChar);
             GetAnimCharToAPoint(PointOfChar, Config.ScalingAnimationDuration);
         }
 
