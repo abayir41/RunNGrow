@@ -283,7 +283,14 @@ public class GameController : MonoBehaviour
         
         //set throwing ball speed while throwing
 
+        /*
         while (!(CharacterControllers[Side.Middle].IsCharacterGhostMode || !IsAnyIntermediateObjAlive && _bossHitTheWall))
+        {
+            yield return null;
+        }
+        */
+
+        while (!((CharacterControllers[Side.Middle].IsCharacterGhostMode && !IsAnyIntermediateObjAlive) || (_bossHitTheWall && !IsAnyIntermediateObjAlive)))
         {
             yield return null;
         }
@@ -294,6 +301,9 @@ public class GameController : MonoBehaviour
             yield return null;
         }
         */
+
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
         
         //Boss Die
 

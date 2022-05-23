@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class NormalObstacleObject : MonoBehaviour
 {
@@ -23,17 +24,9 @@ public class NormalObstacleObject : MonoBehaviour
 
     [SerializeField] private MeshRenderer middlePanel;
     [SerializeField] private GameObject normalObstacle;
-    [SerializeField] private GameObject partRemover;
-    [SerializeField] private GameObject destroyer;
+    [SerializeField] private List<GameObject> partRemover;
+    [SerializeField] private List<GameObject> destroyer;
     [SerializeField] private float destroyerRotPower;
-
-    private void Update()
-    {
-        if (_obstacleProperties.obstacleType == NormalObstacleType.Destroyer)
-        {
-            destroyer.transform.Rotate(new Vector3(0,1,0) * (Time.deltaTime * destroyerRotPower));
-        }
-    }
 
     public void SetProperties(ObstacleStruct prop)
     {
@@ -122,8 +115,10 @@ public class NormalObstacleObject : MonoBehaviour
                 break;
             
             case NormalObstacleType.Destroyer:
-                destroyer.SetActive(true);
-                destroyer.transform.parent.tag = "Bad";
+                var index = Random.Range (0, destroyer.Count);
+                var obstacle = destroyer[index];
+                obstacle.SetActive(true);
+                obstacle.transform.parent.tag = "Bad";
                 for (int i = 0; i < quad.Length; i++)
                 {
                     quad[i].SetActive(false);
@@ -131,8 +126,10 @@ public class NormalObstacleObject : MonoBehaviour
                 break;
             
             case NormalObstacleType.PartRemover:
-                partRemover.SetActive(true);
-                destroyer.transform.parent.tag = "Bad";
+                index = Random.Range (0, partRemover.Count);
+                obstacle = partRemover[index];
+                obstacle.SetActive(true);
+                obstacle.transform.parent.tag = "Bad";
                 for (int i = 0; i < quad.Length; i++)
                 {
                     quad[i].SetActive(false);

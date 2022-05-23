@@ -37,12 +37,18 @@ public class GameConfig : ScriptableObject
     public Material RedColor => redColor;
     public Material BlueColor => blueColor;
     public float DistanceLastObstacleFinishPoint => distanceLastObstacleFinishPoint;
+    public float Obs0Rot => obs0Rot;
+    public float Obs1Rot => obs1Rot;
+    public float Obs3Rot => obs3Rot;
     
     [Header("Obstacles Configurations")] 
     [SerializeField] private float distanceBetweenObstacle;
     [SerializeField] private float distanceLastObstacleFinishPoint;
     [SerializeField] private Material redColor;
     [SerializeField] private Material blueColor;
+    [SerializeField] private float obs0Rot;
+    [SerializeField] private float obs1Rot;
+    [SerializeField] private float obs3Rot;
 
 
     //------------------------

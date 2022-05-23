@@ -23,6 +23,9 @@ MonoBehaviour:
   distanceLastObstacleFinishPoint: 10
   redColor: {fileID: 2100000, guid: 8de038faf9a0340d9b43bdb70fa8e53b, type: 2}
   blueColor: {fileID: 2100000, guid: b9fb430f13049465b8799c1c118fce90, type: 2}
+  obs0Rot: 80
+  obs1Rot: 100
+  obs3Rot: 80
   widthScalingCoefficient: 0.5
   heightScalingCoefficient: 0.3
   minWidth: 1

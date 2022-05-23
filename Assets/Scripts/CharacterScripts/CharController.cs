@@ -163,7 +163,7 @@ public class CharController : MonoBehaviour
         var x = PointOfChar.x;
         var y = PointOfChar.y;
 
-        if (x <= 0 || y <= 0)
+        if ((x < 0 || y < 0) || (x == 0 && y == 0))
         {
             GetAnimCharToAPoint(0,0,Config.ScalingAnimationDuration);
             CanCharShrinkMore = false;
@@ -171,8 +171,6 @@ public class CharController : MonoBehaviour
         }
         else
         {
-            
-            
             GetAnimCharToAPoint(PointOfChar, Config.ScalingAnimationDuration);
         }
     }
@@ -227,19 +225,13 @@ public class CharController : MonoBehaviour
             var sizeX = 0;
             var sizeY = 0;
 
-            if (PointOfChar.x > 1.0f)
+            if (PointOfChar.x >= 1.0f)
                 sizeX = 1;
             
-            if (PointOfChar.y > 1.0f)
+            if (PointOfChar.y >= 1.0f)
                 sizeY = 1;
-            
-            if (PointOfChar.x == 1 && PointOfChar.y == 1)
-            {
-                sizeX = 1;
-                sizeY = 1;
-            }
-            
-            
+
+
             var resultSize = new Vector2(sizeX, sizeY);
             
             IntermediateStartedToMove(resultSize, leaveSide);
@@ -327,13 +319,19 @@ public class CharController : MonoBehaviour
 
         var resultAfterHit = Utilities.NormalObstacleToPoint(obstacle.Type, PointOfChar, obstacle.ObstaclePoint);
 
+        var cache = PointOfChar;
+        
         var x = resultAfterHit.x < 0;
         var y = resultAfterHit.y < 0;
 
+        
+        
         PointOfChar = resultAfterHit;
         
         if (x || y)
         {
+            Debug.Log(SideOfChar + ": " + cache+ "To "+Vector2.zero);
+            
             GetAnimCharToAPoint(0,0,Config.ScalingAnimationDuration);
 
             PointOfChar = Vector2.zero;
@@ -342,6 +340,8 @@ public class CharController : MonoBehaviour
             
         }else if (obstacle.Type == NormalObstacleType.PartRemover)
         {
+            Debug.Log(SideOfChar + ": " + cache+ "To "+PointOfChar);
+            
             var part = Instantiate(bodyPartPrefab);
             var localScale = bodyPartRef.transform.lossyScale;
             part.transform.position = bodyPartRef.transform.position;
@@ -357,6 +357,7 @@ public class CharController : MonoBehaviour
         }
         else
         {
+            Debug.Log(SideOfChar + ": " + cache+ "To "+PointOfChar);
             GetAnimCharToAPoint(PointOfChar, Config.ScalingAnimationDuration);
         }
 

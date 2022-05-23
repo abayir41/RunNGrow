@@ -79,10 +79,10 @@ public readonly struct TweenObjectAnims
 
     public void KillAllAnims()
     {
-        AnimX.Kill();
-        AnimYp1.Kill();
-        AnimYp2.Kill();
-        AnimZ.Kill();
+        AnimX?.Kill();
+        AnimYp1?.Kill();
+        AnimYp2?.Kill();
+        AnimZ?.Kill();
     }
 }
 
@@ -102,3 +102,7 @@ public enum UIAnimationTypes
     FadeOut = 16,
     FadeLoop = 32
 }
+
+
+
+
