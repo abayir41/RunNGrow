@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour
 
     public List<GameObject> characters;
     private Dictionary<Side, GameObject> CharactersDict { get; set; }
-    private Dictionary<Side, CharController> CharacterControllers { get; set; }
+    public Dictionary<Side, CharController> CharacterControllers { get; set; }
     public Dictionary<Side, Transform> CharacterTransforms { get; private set; }
 
     private Dictionary<Side, bool> LeftAndRightCanShrink => new Dictionary<Side, bool>()

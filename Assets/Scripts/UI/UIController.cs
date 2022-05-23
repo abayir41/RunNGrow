@@ -35,6 +35,8 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private Image unlockSkinFrontImage;
     [SerializeField] private Image unlockSkinBackImage;
+    [SerializeField] private RectTransform holdDragIcon;
+    [SerializeField] private UIElementController holdAndDrag;
 
     [SerializeField] private UIElementController skinSelectOpenButton;
     [SerializeField] private UIElementController skinSelectMenu;
@@ -79,6 +81,8 @@ public class UIController : MonoBehaviour
         soundImage.sprite = PlayerPrefs.GetInt("Sound") == 0 ? soundEnable : soundDisable;
         
         skinSelectMenu.CloseUI();
+
+        holdDragIcon.DOMoveX(Screen.width / 3 * 2, 1).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
     }
 
     private void OnEnable()
@@ -109,10 +113,10 @@ public class UIController : MonoBehaviour
     public void StartGame()
     {
         _touchToStartLoopAnim.ForEach(core => core.Kill());
-        touchToStart.FadeOut(() =>
-        {
-            GameActions.GameStarted?.Invoke();
-        });
+        touchToStart.CloseUI();
+        holdAndDrag.CloseUI();
+        GameActions.GameStarted?.Invoke();
+        
     }
 
     public void SetGameScoreText(int value)

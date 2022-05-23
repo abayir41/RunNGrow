@@ -54,7 +54,7 @@ public class CharController : MonoBehaviour
     private List<Animator> _animators;
     private static readonly int Started = Animator.StringToHash("GameStarted");
 
-    [SerializeField] private Color charColor;
+    [SerializeField] public Color charColor;
     [SerializeField] private GameObject bodyPartRef;
     [SerializeField] private GameObject bodyPartPrefab;
 

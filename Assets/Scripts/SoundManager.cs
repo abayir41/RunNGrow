@@ -16,6 +16,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip wrong;
     public AudioClip lose;
     public AudioClip win;
+    public AudioClip tabela;
 
     public void OnEnable()
     {
@@ -52,6 +53,9 @@ public class SoundManager : MonoBehaviour
             case SoundTypes.Win:
                 clip = win;
                 break;
+            case SoundTypes.Tabela:
+                clip = tabela;
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(obj), obj, null);
         }
@@ -75,5 +79,6 @@ public enum SoundTypes
     Good,
     Wrong,
     Lose,
-    Win
+    Win,
+    Tabela
 }

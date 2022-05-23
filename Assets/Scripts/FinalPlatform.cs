@@ -5,6 +5,7 @@ using DG.Tweening;
 using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class FinalPlatform : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class FinalPlatform : MonoBehaviour
     public List<Renderer> colorfulItems;
 
     public Color colorfulItemColor;
+    public GameObject splash;
+    
 
    
 
@@ -35,6 +38,13 @@ public class FinalPlatform : MonoBehaviour
         if(arg3 != this) return;
 
         gotHit = true;
+        
+        splash.SetActive(true);
+        splash.GetComponent<SpriteRenderer>().color =
+            GameController.Instance.CharacterControllers[Side.Middle].charColor;
+        splash.transform.Rotate(new Vector3(0,0,Random.Range(0,90)));
+        
+        SoundManager.PlaySpecificSound?.Invoke(SoundTypes.Tabela);
 
         colorfulItems.ForEach(renderer1 =>
         {
