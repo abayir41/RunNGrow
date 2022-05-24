@@ -136,9 +136,18 @@ public class UIController : MonoBehaviour
 
     public void OpenDeathScreen()
     {
-        deathScreen.OpenUI();
-        deathScreen.StartFadeLoop();   
+        StartCoroutine(DeathCoroutine());
     }
+
+    IEnumerator DeathCoroutine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        
+        deathScreen.OpenUI();
+        deathScreen.StartFadeLoop();  
+    }
+    
+    //TODO: DeathSCreen
 
     public void Restart()
     {

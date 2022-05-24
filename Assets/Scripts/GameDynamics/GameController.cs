@@ -16,7 +16,6 @@ public class GameController : MonoBehaviour
     public static GameConfig Config { get; private set; }
     [SerializeField] private GameConfig config;
 
-
     public Axis MapAlongAxis => alongAxis;
     [SerializeField] private Axis alongAxis;
 
@@ -146,6 +145,7 @@ public class GameController : MonoBehaviour
         DOTween.SetTweensCapacity(1000,50);
         
         UIControl.SetCoinText(MoneySystem.TotalPoints);
+        
     }
 
     private void OnEnable()
@@ -313,10 +313,12 @@ public class GameController : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             //save began touch 2d point
-            firstPressPos = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
+            firstPressPos = new Vector2(Input.mousePosition.x,Input.mousePosition.y);DirectionOfIntermediateObj currDirect;
         }
-        if(Input.GetMouseButtonUp(0))
+
+        if (Input.GetMouseButton(0))
         {
+            
             DirectionOfIntermediateObj currDirect;
             //save ended touch 2d point
             secondPressPos = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
@@ -331,13 +333,11 @@ public class GameController : MonoBehaviour
             if(currentSwipe.x < 0  &&currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
             {
                 currDirect = DirectionOfIntermediateObj.Left;
-                Debug.Log("left swipe");
             }
             //swipe right
             else if(currentSwipe.x > 0  &&currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
             {
                 currDirect = DirectionOfIntermediateObj.Right;
-                Debug.Log("right swipe");
             }
             else
             {
@@ -370,6 +370,17 @@ public class GameController : MonoBehaviour
 
                 Direction = currDirect;
             }
+        }
+        if(Input.GetMouseButtonUp(0))
+        {
+            if (_intermediateObjectSpawner != null)
+            {
+                StopCoroutine(_intermediateObjectSpawner);
+                _coroutineStopped = true;
+            }
+                
+            Direction = DirectionOfIntermediateObj.Null;
+            
         }
     }
 
