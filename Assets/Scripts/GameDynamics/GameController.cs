@@ -225,6 +225,8 @@ public class GameController : MonoBehaviour
                 throw new NotImplementedException();
         }
         
+        //Mouse Movement
+        MouseMove();
         
         //Screen Touch Control
         if (Input.touchCount > 0 && !_gameFinishAnimationStarted && !gameFailed)
@@ -301,6 +303,74 @@ public class GameController : MonoBehaviour
             }
         }
         
+    }
+//inside class
+    Vector2 firstPressPos;
+    Vector2 secondPressPos;
+    Vector2 currentSwipe;
+    public void MouseMove()
+    { 
+        if(Input.GetMouseButtonDown(0))
+        {
+            //save began touch 2d point
+            firstPressPos = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
+        }
+        if(Input.GetMouseButtonUp(0))
+        {
+            DirectionOfIntermediateObj currDirect;
+            //save ended touch 2d point
+            secondPressPos = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
+       
+            //create vector from the two points
+            currentSwipe = new Vector2(secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
+           
+            //normalize the 2d vector
+            currentSwipe.Normalize();
+ 
+            //swipe left
+            if(currentSwipe.x < 0  &&currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
+            {
+                currDirect = DirectionOfIntermediateObj.Left;
+                Debug.Log("left swipe");
+            }
+            //swipe right
+            else if(currentSwipe.x > 0  &&currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
+            {
+                currDirect = DirectionOfIntermediateObj.Right;
+                Debug.Log("right swipe");
+            }
+            else
+            {
+                currDirect = DirectionOfIntermediateObj.Null;
+            }
+            if (Direction != currDirect || _coroutineStopped)
+            {
+                if (_intermediateObjectSpawner != null)
+                {
+                    StopCoroutine(_intermediateObjectSpawner);
+                    _coroutineStopped = true;
+                }
+                        
+
+                Debug.Log(currDirect);
+                    
+                switch (currDirect)
+                {
+                    case DirectionOfIntermediateObj.Right:
+                        ScreenTouched(Side.Left);
+                        break;
+                    case DirectionOfIntermediateObj.Left:
+                        ScreenTouched(Side.Right);
+                        break;
+                    case DirectionOfIntermediateObj.Null:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                Direction = currDirect;
+            }
+        }
     }
 
 
