@@ -39,6 +39,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private RectTransform holdDragIcon;
     [SerializeField] private UIElementController holdAndDrag;
     [SerializeField] private List<RectTransform> holdAndDragBalls;
+    [SerializeField] private RectTransform holdDragRightSide;
 
     [SerializeField] private UIElementController skinSelectOpenButton;
     [SerializeField] private UIElementController skinSelectMenu;
@@ -86,11 +87,34 @@ public class UIController : MonoBehaviour
 
         holdAndDragBalls.ForEach((rectTransform, i) =>
         {
-            rectTransform.DOMoveX(Screen.width / 3 * 2, 1).SetDelay(i * 0.07f).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
-            rectTransform.DOMoveY(rectTransform.position.y + 33, 0.5f).SetDelay(i * 0.2f).SetEase(Ease.Linear).OnComplete(() => 
-                rectTransform.DOMoveY(rectTransform.position.y, 0.5f).SetEase(Ease.Linear)).SetLoops(-1,LoopType.Yoyo);
+            var seq = DOTween.Sequence();
+            var position = rectTransform.position;
+            
+            var delay = 0.07f;
+
+            seq.SetDelay(i * delay);
+            seq.Append(rectTransform.DOMoveX(holdDragRightSide.position.x, 1 - i*delay).SetEase(Ease.InOutSine));
+            seq.SetDelay(i * delay);
+            seq.Append(rectTransform.DOMoveX(position.x, 1 - i*delay).SetEase(Ease.InOutSine));
+            seq.SetLoops(-1);
+
+            var seq2 = DOTween.Sequence();
+            
+            seq2.SetDelay(i * delay);
+            seq2.Append(rectTransform.DOMoveY(position.y + 33, 0.5f - i*delay/2).SetEase(Ease.Linear));
+            seq2.Append(rectTransform.DOMoveY(position.y, 0.5f - i*delay/2).SetEase(Ease.Linear));
+            seq2.SetDelay(i * delay);
+            seq2.Append(rectTransform.DOMoveY(position.y + 33, 0.5f - i*delay/2).SetEase(Ease.Linear));
+            seq2.Append(rectTransform.DOMoveY(position.y, 0.5f - i*delay/2).SetEase(Ease.Linear));
+            seq2.SetLoops(-1);
+
+            /*
+        rectTransform.DOMoveX(holdDragRightSide.position.x, 1).SetDelay(i * delay).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
+        rectTransform.DOMoveY(rectTransform.position.y + 33, 0.5f).SetDelay(i * delay).SetEase(Ease.Linear).OnComplete(() => 
+            rectTransform.DOMoveY(rectTransform.position.y, 0.5f).SetEase(Ease.Linear)).SetLoops(-1,LoopType.Yoyo);
+            */
         });
-        holdDragIcon.DOMoveX(Screen.width / 3 * 2, 1).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+        holdDragIcon.DOMoveX(holdDragRightSide.position.x, 1).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
     }
 
     private void OnEnable()
