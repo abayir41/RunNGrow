@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,6 +38,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Image unlockSkinBackImage;
     [SerializeField] private RectTransform holdDragIcon;
     [SerializeField] private UIElementController holdAndDrag;
+    [SerializeField] private List<RectTransform> holdAndDragBalls;
 
     [SerializeField] private UIElementController skinSelectOpenButton;
     [SerializeField] private UIElementController skinSelectMenu;
@@ -82,6 +84,12 @@ public class UIController : MonoBehaviour
         
         skinSelectMenu.CloseUI();
 
+        holdAndDragBalls.ForEach((rectTransform, i) =>
+        {
+            rectTransform.DOMoveX(Screen.width / 3 * 2, 1).SetDelay(i * 0.07f).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
+            rectTransform.DOMoveY(rectTransform.position.y + 33, 0.5f).SetDelay(i * 0.2f).SetEase(Ease.Linear).OnComplete(() => 
+                rectTransform.DOMoveY(rectTransform.position.y, 0.5f).SetEase(Ease.Linear)).SetLoops(-1,LoopType.Yoyo);
+        });
         holdDragIcon.DOMoveX(Screen.width / 3 * 2, 1).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
     }
 
