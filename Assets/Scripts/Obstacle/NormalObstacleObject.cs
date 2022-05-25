@@ -28,6 +28,13 @@ public class NormalObstacleObject : MonoBehaviour
     [SerializeField] private List<GameObject> destroyer;
     [SerializeField] private float destroyerRotPower;
 
+
+    [Button]
+    public void ChangeObstaclePoint(int point)
+    {
+        _obstacleProperties.obstaclePoint = point;
+    }
+
     public void SetProperties(ObstacleStruct prop)
     {
         _obstacleProperties = prop;
