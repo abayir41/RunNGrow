@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -29,10 +30,16 @@ public class NormalObstacleObject : MonoBehaviour
     [SerializeField] private float destroyerRotPower;
 
 
+    public int NewObstaclePoint;
+    public NormalObstacleType Newtype;
+
+
     [Button]
-    public void ChangeObstaclePoint(int point)
+    public void ChangeObstaclePoint()
     {
-        _obstacleProperties.obstaclePoint = point;
+        _obstacleProperties.obstacleType = Newtype;
+        _obstacleProperties.obstaclePoint = NewObstaclePoint;
+        SetProperties(_obstacleProperties);
     }
 
     public void SetProperties(ObstacleStruct prop)

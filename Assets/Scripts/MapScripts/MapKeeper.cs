@@ -9,6 +9,7 @@ public class MapKeeper : MonoBehaviour
 {
     public static MapKeeper Instance { get; private set; }
 
+    [SerializeField] private MapConfig NewMap;
     [SerializeField] private MapConfig map;
     [SerializeField] private int obstacleAmount;
 
@@ -58,6 +59,8 @@ public class MapKeeper : MonoBehaviour
 
     public MapConfig GetMap()
     {
+        if (NewMap != null) return NewMap;
+        
         var mapConfig = map;
 
         mapConfig.leftObstacleTypes = new List<NormalObstacleType>();
